@@ -3743,8 +3743,81 @@
         }
 
         // ========== FINE BACKUP FUNCTIONS ==========
-        
-        // Desktop mouse swipe simulation (drag) per il carosello
+
+        // ========== UPLOAD APP TO GITHUB PAGES ==========
+        async function uploadAppToGitHub() {
+            const token = document.getElementById('githubToken').value.trim();
+            const user = document.getElementById('githubUser').value.trim();
+            const repo = 'american-odyssey-app'; // Repository fisso per l'app
+
+            if (!token || !user) {
+                showBackupStatus('❌ Compila Token e Username GitHub', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('uploadAppBtn');
+            btn.disabled = true;
+
+            showBackupStatus('<span class="loading-spinner"></span>Caricamento app.html su GitHub Pages...', 'loading');
+
+            try {
+                // Leggi il contenuto HTML corrente
+                const htmlContent = document.documentElement.outerHTML;
+
+                // Codifica in base64
+                const base64Content = btoa(unescape(encodeURIComponent(htmlContent)));
+
+                // URL API GitHub per il file app.html
+                const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/app.html`;
+
+                // Prendi il SHA del file corrente (necessario per l'update)
+                const getResponse = await fetch(apiUrl, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                let sha = null;
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    sha = fileData.sha;
+                }
+
+                // Upload/Update il file
+                const updateResponse = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `🚀 Update app.html - ${new Date().toLocaleString('it-IT')}`,
+                        content: base64Content,
+                        sha: sha // Solo se il file esiste
+                    })
+                });
+
+                if (!updateResponse.ok) {
+                    const error = await updateResponse.json();
+                    throw new Error(error.message || 'Errore nel caricamento');
+                }
+
+                showBackupStatus(`✅ App aggiornata su GitHub Pages!<br/>🚀 https://${user}.github.io/${repo}/`, 'success');
+
+                setTimeout(() => {
+                    showBackupStatus('💡 GitHub Pages si aggiornerà tra 30 secondi. Aggiorna l\'app su iPhone!', 'success');
+                }, 1500);
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                showBackupStatus(`❌ Errore: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        // ========== FINE UPLOAD APP ==========
         const swipeArea = document.getElementById('swipeArea');
         let mouseDown = false;
         let mouseStartX = 0;
@@ -3831,6 +3904,10 @@
             <div style="display: flex; gap: 8px; margin-top: 12px;">
                 <button id="backupBtn" onclick="performBackup()" style="flex: 1; padding: 10px; background: #2d2d2d; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Montserrat', sans-serif; transition: all 0.2s;">💾 Backup Ora</button>
                 <button id="restoreBtn" onclick="restoreFromGitHub()" style="flex: 1; padding: 10px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Montserrat', sans-serif; transition: all 0.2s;">📥 Ripristina</button>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button id="uploadAppBtn" onclick="uploadAppToGitHub()" style="flex: 1; padding: 10px; background: #4caf50; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Montserrat', sans-serif; transition: all 0.2s;">🚀 Aggiorna App su GitHub Pages</button>
             </div>
 
             <div style="display: flex; gap: 8px; margin-top: 8px;">

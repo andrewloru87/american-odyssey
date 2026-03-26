@@ -2571,7 +2571,11 @@
         
         async function syncAllDataToGitHub() {
             // ✅ SINCRONIZZA TUTTO: spese + pagamenti su GitHub
-            if (!githubConfig) return;
+            if (!githubConfig) {
+                loadGithubConfig(); // 🔴 Carica la config se non c'è
+            }
+            
+            if (!githubConfig) return false; // Se ancora non c'è, fallisci
             
             try {
                 const content = JSON.stringify({ 
@@ -2618,7 +2622,7 @@
                 console.log('✅ Dati sincronizzati su GitHub (spese + pagamenti)');
                 return true;
             } catch (error) {
-                console.log('⏳ Sync GitHub non disponibile');
+                console.log('⏳ Sync GitHub non disponibile:', error.message);
                 return false;
             }
         }
@@ -2630,11 +2634,16 @@
         
         async function syncExpensesFromGitHub() {
             // ✅ CARICA SEMPRE DAL JSON - Se GitHub ha dati più recenti, aggiorna
-            if (!githubConfig) return;
+            if (!githubConfig) {
+                loadGithubConfig(); // 🔴 Carica la config se non c'è
+            }
+            
+            if (!githubConfig) return; // Se ancora non c'è, skip
             
             // 🔴 NON ricaricare se abbiamo appena salvato (aspetta che GitHub si sincronizzi)
-            if (Date.now() - lastSaveTime < SYNC_DELAY) {
-                console.log('⏱️ In attesa che GitHub si sincronizzi... (', Math.round((SYNC_DELAY - (Date.now() - lastSaveTime)) / 1000), 's)');
+            const timeSinceLastSave = Date.now() - lastSaveTime;
+            if (timeSinceLastSave < SYNC_DELAY) {
+                console.log('⏱️ Skip sync - in attesa che GitHub si sincronizzi... (', Math.round((SYNC_DELAY - timeSinceLastSave) / 1000), 's)');
                 return;
             }
             

@@ -2546,6 +2546,7 @@
             // ✅ SALVA SEMPRE SU GITHUB (fonte unica)
             // localStorage è solo backup se GitHub non è disponibile
             localStorage.setItem('americanOdysseyExpenses', JSON.stringify(expenseList));
+            lastSaveTime = Date.now(); // 🔴 Registra il timestamp del salvataggio
             syncExpensesToGitHub(expenseList).catch(err => console.log('⏳ Sync fallito (ok offline):', err.message));
         }
         let editingIndex = -1;
@@ -2555,6 +2556,8 @@
         // ============================================
         let githubConfig = null;
         let syncInterval = null;
+        let lastSaveTime = 0; // Traccia quando abbiamo salvato
+        let SYNC_DELAY = 10000; // Aspetta 10 secondi dopo il salvataggio prima di ricaricare
         
         function loadGithubConfig() {
             // Configurazione automatica - niente input richiesto!
@@ -2620,6 +2623,12 @@
         async function syncExpensesFromGitHub() {
             // ✅ CARICA SEMPRE DAL JSON - Se GitHub ha dati più recenti, aggiorna
             if (!githubConfig) return;
+            
+            // 🔴 NON ricaricare se abbiamo appena salvato (aspetta che GitHub si sincronizzi)
+            if (Date.now() - lastSaveTime < SYNC_DELAY) {
+                console.log('⏱️ In attesa che GitHub si sincronizzi... (', Math.round((SYNC_DELAY - (Date.now() - lastSaveTime)) / 1000), 's)');
+                return;
+            }
             
             try {
                 const response = await fetch('https://raw.githubusercontent.com/andrewloru87/american-odyssey/main/spese-backup.json');

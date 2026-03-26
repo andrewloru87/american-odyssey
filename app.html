@@ -2788,9 +2788,10 @@
                                         <option>Monica</option>
                                     </select>
                                 </div>
-                                <button onclick="addExpense()" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                                    Aggiungi Spesa
+                                <button onclick="addExpense()" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 8px;">
+                                    ${editingIndex !== -1 ? '✏️ Modifica Spesa' : '➕ Aggiungi Spesa'}
                                 </button>
+                                ${editingIndex !== -1 ? `<button onclick="cancelEdit()" style="padding: 12px; background: #999; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%;">Annulla</button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -3121,7 +3122,15 @@
                 return;
             }
 
-            expenses.push({ description: desc, category, amount, day, person });
+            // 🔴 Se stiamo editando, modifica la spesa esistente
+            if (editingIndex !== -1) {
+                expenses[editingIndex] = { description: desc, category, amount, day, person };
+                editingIndex = -1;
+            } else {
+                // Altrimenti, aggiungi una nuova spesa
+                expenses.push({ description: desc, category, amount, day, person });
+            }
+            
             saveExpenses(expenses);
             
             // Clear form
@@ -3129,6 +3138,7 @@
             document.getElementById('expAmount').value = '';
             document.getElementById('expCategory').value = 'Attività';
             document.getElementById('expPerson').value = 'Andrea';
+            document.getElementById('expDay').value = '1';
             
             renderExpenses();
         }
@@ -3144,6 +3154,18 @@
             
             // Scroll to form
             document.querySelector('#expDesc').focus();
+            renderExpenses(); // Aggiorna il bottone
+        }
+
+        function cancelEdit() {
+            editingIndex = -1;
+            // Clear form
+            document.getElementById('expDesc').value = '';
+            document.getElementById('expAmount').value = '';
+            document.getElementById('expCategory').value = 'Attività';
+            document.getElementById('expPerson').value = 'Andrea';
+            document.getElementById('expDay').value = '1';
+            renderExpenses(); // Aggiorna il bottone
         }
 
         function deleteExpense(idx) {

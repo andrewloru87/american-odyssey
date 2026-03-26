@@ -2569,12 +2569,13 @@
             return true;
         }
         
-        async function syncExpensesToGitHub(expenseList) {
+        async function syncAllDataToGitHub() {
+            // ✅ SINCRONIZZA TUTTO: spese + pagamenti su GitHub
             if (!githubConfig) return;
             
             try {
                 const content = JSON.stringify({ 
-                    expenses: expenseList, 
+                    expenses: expenses, 
                     payments: payments,
                     timestamp: new Date().toISOString()
                 }, null, 2);
@@ -2614,10 +2615,17 @@
                 });
                 
                 if (!res.ok) throw new Error('Sync fallito');
-                console.log('✅ Spese sincronizzate su GitHub');
+                console.log('✅ Dati sincronizzati su GitHub (spese + pagamenti)');
+                return true;
             } catch (error) {
                 console.log('⏳ Sync GitHub non disponibile');
+                return false;
             }
+        }
+        
+        // 🔴 VECCHIA FUNZIONE - MANTENUTA PER COMPATIBILITÀ
+        async function syncExpensesToGitHub(expenseList) {
+            return await syncAllDataToGitHub();
         }
         
         async function syncExpensesFromGitHub() {
@@ -2676,10 +2684,10 @@
         }
 
         function savePayments(paymentList) {
-            // ✅ Salva pagamenti sia localmente che su GitHub
+            // ✅ Salva pagamenti sia localmente che su GitHub (con tutte le spese)
             localStorage.setItem('americanOdysseyPayments', JSON.stringify(paymentList));
             lastSaveTime = Date.now();
-            syncExpensesToGitHub(expenses).catch(err => console.log('⏳ Sync fallito (ok offline):', err.message));
+            syncAllDataToGitHub().catch(err => console.log('⏳ Sync fallito (ok offline):', err.message));
         }
 
         let payments = loadPayments();
@@ -3139,7 +3147,7 @@
             lastSaveTime = Date.now();
             
             try {
-                await syncExpensesToGitHub(expenses); // ⏳ ASPETTA
+                await syncAllDataToGitHub(); // ⏳ ASPETTA
                 console.log('✅ Spesa salvata su GitHub');
             } catch (err) {
                 console.log('⚠️ Sync non disponibile, salvata localmente');
@@ -3187,7 +3195,7 @@
                 lastSaveTime = Date.now();
                 
                 try {
-                    await syncExpensesToGitHub(expenses); // ⏳ ASPETTA
+                    await syncAllDataToGitHub(); // ⏳ ASPETTA
                     console.log('✅ Spesa eliminata da GitHub');
                 } catch (err) {
                     console.log('⚠️ Sync non disponibile, eliminata localmente');

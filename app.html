@@ -2552,35 +2552,30 @@
         let editingIndex = -1;
         
         // ============================================
-        // GITHUB REALTIME SYNC
+        // GITHUB REALTIME SYNC - VERSIONE SEMPLIFICATA
         // ============================================
         let githubConfig = null;
         let syncInterval = null;
-        let lastSaveTime = 0; // Traccia quando abbiamo salvato
-        let SYNC_DELAY = 15000; // Aspetta 15 secondi dopo il salvataggio prima di ricaricare
-        let isSyncing = false; // 🔴 Flag: è in corso un sync?
         
         function loadGithubConfig() {
             // Configurazione automatica - niente input richiesto!
             githubConfig = {
-                token: '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',
+                token: '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',
                 user: 'andrewloru87',
                 repo: 'american-odyssey'
             };
+            console.log('✅ GitHub config caricato');
             return true;
         }
         
         async function syncAllDataToGitHub() {
             // ✅ SINCRONIZZA TUTTO: spese + pagamenti su GitHub
             if (!githubConfig) {
-                loadGithubConfig(); // 🔴 Carica la config se non c'è
+                loadGithubConfig();
             }
             
-            if (!githubConfig) return false; // Se ancora non c'è, fallisci
-            
-            isSyncing = true; // 🔴 Set flag: sto sincronizzando
-            
             try {
+                console.log('📤 Inizio sync a GitHub...');
                 const content = JSON.stringify({ 
                     expenses: expenses, 
                     payments: payments,
@@ -2602,8 +2597,11 @@
                     if (getRes.ok) {
                         const data = await getRes.json();
                         sha = data.sha;
+                        console.log('✅ SHA trovato:', sha.substring(0, 10) + '...');
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.log('⚠️ File non esiste ancora, lo creerò');
+                }
                 
                 const body = {
                     message: `🔄 Auto-sync ${new Date().toLocaleTimeString('it-IT')}`,
@@ -2621,79 +2619,62 @@
                     body: JSON.stringify(body)
                 });
                 
-                if (!res.ok) throw new Error('Sync fallito');
-                console.log('✅ Dati sincronizzati su GitHub (spese + pagamenti)');
-                lastSaveTime = Date.now();
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(JSON.stringify(error));
+                }
+                console.log('✅ Sync completato! Spese salvate su GitHub');
                 return true;
             } catch (error) {
-                console.log('⏳ Sync GitHub non disponibile:', error.message);
+                console.error('❌ Errore sync GitHub:', error.message);
                 return false;
-            } finally {
-                isSyncing = false; // 🔴 Clear flag quando finito
             }
-        }
-        
-        // 🔴 VECCHIA FUNZIONE - MANTENUTA PER COMPATIBILITÀ
-        async function syncExpensesToGitHub(expenseList) {
-            return await syncAllDataToGitHub();
         }
         
         async function syncExpensesFromGitHub() {
-            // ✅ CARICA SEMPRE DAL JSON - Se GitHub ha dati più recenti, aggiorna
+            // ✅ Carica dal JSON su GitHub
             if (!githubConfig) {
-                loadGithubConfig(); // 🔴 Carica la config se non c'è
-            }
-            
-            if (!githubConfig) return; // Se ancora non c'è, skip
-            
-            // 🔴 NON ricaricare se è in corso un sync O se abbiamo appena salvato
-            if (isSyncing) {
-                console.log('⏱️ Skip sync - un sync è già in corso...');
-                return;
-            }
-            
-            const timeSinceLastSave = Date.now() - lastSaveTime;
-            if (timeSinceLastSave < SYNC_DELAY) {
-                console.log('⏱️ Skip sync - in attesa che GitHub si sincronizzi... (', Math.round((SYNC_DELAY - timeSinceLastSave) / 1000), 's)');
-                return;
+                loadGithubConfig();
             }
             
             try {
-                const response = await fetch('https://raw.githubusercontent.com/andrewloru87/american-odyssey/main/spese-backup.json');
-                if (!response.ok) return;
+                const response = await fetch('https://raw.githubusercontent.com/andrewloru87/american-odyssey/main/spese-backup.json?t=' + Date.now());
+                if (!response.ok) {
+                    console.log('⚠️ JSON non trovato su GitHub');
+                    return;
+                }
                 
                 const data = await response.json();
                 
                 // Confronta: se GitHub è diverso dal locale, aggiorna
                 if (data.expenses && JSON.stringify(data.expenses) !== JSON.stringify(expenses)) {
-                    console.log('🔄 Spese aggiornate da GitHub (', data.expenses.length, 'spese )');
+                    console.log('🔄 Aggiornamento da GitHub: ', data.expenses.length, 'spese');
                     expenses = data.expenses;
-                    payments = data.payments || payments;
-                    // Salva backup locale
+                    payments = data.payments || [];
                     localStorage.setItem('americanOdysseyExpenses', JSON.stringify(expenses));
                     currentTab = 'costs';
                     renderExpenses();
                 }
             } catch (error) {
-                // Silenzioso se offline
+                console.log('⚠️ Errore caricamento JSON:', error.message);
             }
         }
         
-        // Polling ogni 5 secondi
+        // Polling ogni 10 secondi
         function startRealtimeSync() {
             if (loadGithubConfig()) {
-                console.log('🚀 Realtime sync attivato');
+                console.log('🚀 Realtime sync avviato (ogni 10 secondi)');
                 syncInterval = setInterval(() => {
                     syncExpensesFromGitHub();
-                }, 5000);
+                }, 10000);
             }
         }
         
-        // Ferma il sync
         function stopRealtimeSync() {
             if (syncInterval) {
                 clearInterval(syncInterval);
                 syncInterval = null;
+                console.log('⏹️ Realtime sync fermato');
             }
         }
 
@@ -2704,10 +2685,10 @@
         }
 
         function savePayments(paymentList) {
-            // ✅ Salva pagamenti sia localmente che su GitHub (con tutte le spese)
+            // ✅ Salva pagamenti sia localmente che su GitHub
             localStorage.setItem('americanOdysseyPayments', JSON.stringify(paymentList));
-            lastSaveTime = Date.now();
-            syncAllDataToGitHub().catch(err => console.log('⏳ Sync fallito (ok offline):', err.message));
+            console.log('📤 Sincronizzo pagamenti a GitHub...');
+            syncAllDataToGitHub().catch(err => console.log('⚠️ Sync pagamenti fallito'));
         }
 
         let payments = loadPayments();
@@ -3153,25 +3134,21 @@
                 return;
             }
 
-            // 🔴 Se stiamo editando, modifica la spesa esistente
+            // Se stiamo editando, modifica
             if (editingIndex !== -1) {
                 expenses[editingIndex] = { description: desc, category, amount, day, person };
                 editingIndex = -1;
             } else {
-                // Altrimenti, aggiungi una nuova spesa
+                // Aggiungi nuova spesa
                 expenses.push({ description: desc, category, amount, day, person });
             }
             
-            // 🔴 ASPETTA che il sync sia completato PRIMA di continuare
+            // Salva localmente
             localStorage.setItem('americanOdysseyExpenses', JSON.stringify(expenses));
-            lastSaveTime = Date.now();
             
-            try {
-                await syncAllDataToGitHub(); // ⏳ ASPETTA
-                console.log('✅ Spesa salvata su GitHub');
-            } catch (err) {
-                console.log('⚠️ Sync non disponibile, salvata localmente');
-            }
+            // Sync a GitHub
+            console.log('📤 Sincronizzo spesa a GitHub...');
+            await syncAllDataToGitHub();
             
             // Clear form
             document.getElementById('expDesc').value = '';
@@ -3212,14 +3189,9 @@
             if (confirm('Eliminare questa spesa?')) {
                 expenses.splice(idx, 1);
                 localStorage.setItem('americanOdysseyExpenses', JSON.stringify(expenses));
-                lastSaveTime = Date.now();
                 
-                try {
-                    await syncAllDataToGitHub(); // ⏳ ASPETTA
-                    console.log('✅ Spesa eliminata da GitHub');
-                } catch (err) {
-                    console.log('⚠️ Sync non disponibile, eliminata localmente');
-                }
+                console.log('📤 Sincronizzo eliminazione a GitHub...');
+                await syncAllDataToGitHub();
                 
                 renderExpenses();
             }

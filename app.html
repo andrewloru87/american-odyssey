@@ -2557,7 +2557,8 @@
         let githubConfig = null;
         let syncInterval = null;
         let lastSaveTime = 0; // Traccia quando abbiamo salvato
-        let SYNC_DELAY = 10000; // Aspetta 10 secondi dopo il salvataggio prima di ricaricare
+        let SYNC_DELAY = 15000; // Aspetta 15 secondi dopo il salvataggio prima di ricaricare
+        let isSyncing = false; // 🔴 Flag: è in corso un sync?
         
         function loadGithubConfig() {
             // Configurazione automatica - niente input richiesto!
@@ -2576,6 +2577,8 @@
             }
             
             if (!githubConfig) return false; // Se ancora non c'è, fallisci
+            
+            isSyncing = true; // 🔴 Set flag: sto sincronizzando
             
             try {
                 const content = JSON.stringify({ 
@@ -2620,10 +2623,13 @@
                 
                 if (!res.ok) throw new Error('Sync fallito');
                 console.log('✅ Dati sincronizzati su GitHub (spese + pagamenti)');
+                lastSaveTime = Date.now();
                 return true;
             } catch (error) {
                 console.log('⏳ Sync GitHub non disponibile:', error.message);
                 return false;
+            } finally {
+                isSyncing = false; // 🔴 Clear flag quando finito
             }
         }
         
@@ -2640,7 +2646,12 @@
             
             if (!githubConfig) return; // Se ancora non c'è, skip
             
-            // 🔴 NON ricaricare se abbiamo appena salvato (aspetta che GitHub si sincronizzi)
+            // 🔴 NON ricaricare se è in corso un sync O se abbiamo appena salvato
+            if (isSyncing) {
+                console.log('⏱️ Skip sync - un sync è già in corso...');
+                return;
+            }
+            
             const timeSinceLastSave = Date.now() - lastSaveTime;
             if (timeSinceLastSave < SYNC_DELAY) {
                 console.log('⏱️ Skip sync - in attesa che GitHub si sincronizzi... (', Math.round((SYNC_DELAY - timeSinceLastSave) / 1000), 's)');

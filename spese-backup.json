@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-27T15:07:21.484Z",
+  "timestamp": "2026-03-27T15:07:58.274Z",
   "expenses": [
     {
       "id": "1774623261469zz4fo16d4",
@@ -36,6 +36,15 @@
       "day": 1,
       "person": "Andrea",
       "updated": 1774624041481
+    },
+    {
+      "id": "1774624078270sygqkz9g0",
+      "description": "Top of the rock",
+      "category": "Tour",
+      "amount": 104.11,
+      "day": 1,
+      "person": "Andrea",
+      "updated": 1774624078270
     }
   ],
   "payments": [
@@ -50,7 +59,7 @@
     }
   ],
   "summary": {
-    "total": -4977.200000000001,
-    "count": 4
+    "total": -4873.090000000001,
+    "count": 5
   }
 }

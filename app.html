@@ -3662,37 +3662,6 @@ function addTimestampToPayments(payments) {
             if (!response.ok) {
                 const error = await response.json();
                 console.error("❌ Errore upload:", error);
-                
-                // Se fallisce per SHA, prova SENZA SHA (creazione nuovo file)
-                if (error.message && error.message.includes('sha')) {
-                    console.log("🔄 Retry: tentativo creazione file SENZA SHA...");
-                    
-                    const retryPayload = {
-                        message: `Sincronizzazione spese - ${new Date().toLocaleString('it-IT')}`,
-                        content: base64Content
-                        // NO sha
-                    };
-                    
-                    const retryResponse = await fetch(uploadUrl, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/vnd.github.v3+json'
-                        },
-                        body: JSON.stringify(retryPayload)
-                    });
-                    
-                    if (!retryResponse.ok) {
-                        const retryError = await retryResponse.json();
-                        throw new Error(retryError.message || 'Errore upload a GitHub');
-                    }
-                    
-                    const retryResult = await retryResponse.json();
-                    console.log("✅ Upload completato (retry):", retryResult.commit.message);
-                    return retryResult;
-                }
-                
                 throw new Error(error.message || 'Errore upload a GitHub');
             }
 

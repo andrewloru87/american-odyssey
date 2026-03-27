@@ -3634,7 +3634,9 @@ function addTimestampToPayments(payments) {
         }
 
         async function uploadToGitHub(token, user, repo, fileName, base64Content) {
-            // URL SENZA .json - GitHub API lo aggiunge automaticamente
+            // Definisci l'URL per il file su GitHub
+            const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}.json`;
+            
             // NON cercare lo SHA - crea sempre nuovo file
             // Questo evita i problemi di "sha wasn't supplied"
             console.log("📤 Tentativo upload su:", uploadUrl);

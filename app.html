@@ -3420,7 +3420,7 @@ function addTimestampToPayments(payments) {
         render();
         
         // ===== CHIAMA AUTO-LOGIN AL CARICAMENTO =====
-        autoLoginOnStartup();
+        // autoLoginOnStartup(); // ← Rimosso: utente clicca "Sincronizza Tutto" per importare
         
         // Scroll event per nascondere/mostrare la header
         const header = document.getElementById('header');
@@ -3715,7 +3715,7 @@ function addTimestampToPayments(payments) {
             }
         }
         
-        // Auto-sync quando aggiungi una spesa
+        // Auto-sync quando aggiungi una spesa - scrive SOLO la nuova spesa
         async function addExpenseAndSync() {
             const desc = document.getElementById('expDesc').value;
             const category = document.getElementById('expCategory').value;
@@ -3748,9 +3748,99 @@ function addTimestampToPayments(payments) {
             document.getElementById('expCategory').value = 'Attività';
             document.getElementById('expPerson').value = 'Andrea';
             
-            // Auto-sync a GitHub
+            // ⚡ Auto-sync: SOLO upload della spesa corrente (NON merge)
             console.log("🚀 Auto-sync dopo aggiunta spesa...");
-            await syncWithGitHub(true); // silent = true (no modal)
+            await autoSyncNewExpense();
+        }
+
+        // Upload SOLO la nuova spesa aggiunta (non fare merge, solo append)
+        async function autoSyncNewExpense() {
+            const saved = localStorage.getItem('odysseyGitHubCredentials');
+            if (!saved) {
+                console.log("ℹ️ Auto-sync skippato: nessuna credenziale salvata");
+                return;
+            }
+
+            try {
+                const { token, user, repo } = JSON.parse(saved);
+                const fileName = 'spese-backup';
+                const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}.json`;
+                
+                console.log("📤 Auto-sync: scrivo il file con TUTTE le spese correnti...");
+
+                // Prepara payload con TUTTE le spese correnti
+                const backupData = {
+                    timestamp: new Date().toISOString(),
+                    expenses: expenses,
+                    payments: payments || [],
+                    summary: {
+                        total: expenses.reduce((sum, e) => sum + e.amount, 0),
+                        count: expenses.length
+                    }
+                };
+
+                const jsonContent = JSON.stringify(backupData, null, 2);
+                const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
+
+                // Tentativo 1: PUT senza SHA
+                let uploadPayload = {
+                    message: `Auto-sync spese - ${new Date().toLocaleString('it-IT')}`,
+                    content: base64Content
+                };
+
+                let putResponse = await fetch(uploadUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(uploadPayload)
+                });
+
+                if (putResponse.ok) {
+                    console.log("✅ Auto-sync completato!");
+                    return;
+                }
+
+                // Se fallisce con 422, prova DELETE + PUT
+                if (putResponse.status === 422) {
+                    console.log("⚠️ Tentativo 1 fallito, provo DELETE + PUT...");
+                    
+                    try {
+                        await fetch(uploadUrl, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify({ message: 'Auto-delete' })
+                        });
+
+                        await new Promise(r => setTimeout(r, 300));
+
+                        putResponse = await fetch(uploadUrl, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify(uploadPayload)
+                        });
+
+                        if (putResponse.ok) {
+                            console.log("✅ Auto-sync completato (dopo DELETE)!");
+                        } else {
+                            console.error("❌ Auto-sync fallito anche dopo DELETE");
+                        }
+                    } catch (e) {
+                        console.error("❌ Auto-sync error:", e.message);
+                    }
+                }
+            } catch (error) {
+                console.error("❌ Auto-sync error:", error);
+            }
         }
 
         async function uploadToGitHub(token, user, repo, fileName, base64Content) {

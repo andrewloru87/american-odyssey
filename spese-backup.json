@@ -1,19 +1,9 @@
 {
-  "timestamp": "2026-03-27T14:27:22.970Z",
-  "expenses": [
-    {
-      "id": "177462124326640ey8xq5i",
-      "description": "Wy",
-      "category": "💸 Pagamenti",
-      "amount": -20,
-      "day": 1,
-      "person": "Monica",
-      "updated": 1774621243266
-    }
-  ],
+  "timestamp": "2026-03-27T14:27:24.789Z",
+  "expenses": [],
   "payments": [],
   "summary": {
-    "total": -20,
-    "count": 1
+    "total": 0,
+    "count": 0
   }
 }

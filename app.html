@@ -2770,7 +2770,7 @@ function addTimestampToPayments(payments) {
                                         <option>Monica</option>
                                     </select>
                                 </div>
-                                <button onclick="addExpense()" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                                <button onclick="addExpenseAndSync()" style="padding: 12px; background: #667eea; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
                                     Aggiungi Spesa
                                 </button>
                             </div>
@@ -3091,40 +3091,7 @@ function addTimestampToPayments(payments) {
             }
         }
 
-        function addExpense() {
-            const desc = document.getElementById('expDesc').value;
-            const category = document.getElementById('expCategory').value;
-            const amount = parseFloat(document.getElementById('expAmount').value);
-            const day = parseInt(document.getElementById('expDay').value);
-            const person = document.getElementById('expPerson').value;
-
-            if (!desc || !amount || amount <= 0 || day < 1 || day > 25) {
-                alert('Per favore compila tutti i campi correttamente');
-                return;
-            }
-
-            // ✅ Aggiungi ID unico e timestamp per sincronizzazione multi-dispositivo
-            const newExpense = {
-                id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                description: desc,
-                category,
-                amount,
-                day,
-                person,
-                updated: new Date().getTime()
-            };
-
-            expenses.push(newExpense);
-            saveExpenses(expenses);
-            
-            // Clear form
-            document.getElementById('expDesc').value = '';
-            document.getElementById('expAmount').value = '';
-            document.getElementById('expCategory').value = 'Attività';
-            document.getElementById('expPerson').value = 'Andrea';
-            
-            renderExpenses();
-        }
+        // addExpense è rimpiazzato da addExpenseAndSync (vedi sotto con auto-sync)
 
         function editExpense(idx) {
             const e = expenses[idx];
@@ -3576,61 +3543,147 @@ function addTimestampToPayments(payments) {
             statusDiv.innerHTML = `<div class="backup-status ${type}">${message}</div>`;
         }
 
-        async function performBackup() {
-            const token = document.getElementById('githubToken').value.trim();
-            const user = document.getElementById('githubUser').value.trim();
-            const repo = document.getElementById('githubRepo').value.trim();
+        // ===== SINCRONIZZAZIONE AUTOMATICA CON GITHUB =====
+        async function syncWithGitHub(silent = false) {
+            // Leggi credenziali salvate
+            const saved = localStorage.getItem('odysseyGitHubCredentials');
+            if (!saved) {
+                if (!silent) showBackupStatus('❌ Nessuna credenziale salvata. Clicca ☁️ per configurare.', 'error');
+                return;
+            }
             
-            // ⚠️ CRITICO: NON leggere dal campo input!
-            // Usa SEMPRE 'spese-backup' - punto fisso!
-            const fileName = 'spese-backup';
+            try {
+                const { token, user, repo } = JSON.parse(saved);
+                const fileName = 'spese-backup';
+                
+                if (!silent) {
+                    showBackupStatus('<span class="loading-spinner"></span>Sincronizzazione in corso...', 'loading');
+                }
+                console.log("🔄 Sync: caricamento + salvataggio...");
+                
+                // ==== STEP 1: LEGGI DA GITHUB ====
+                const fileUrl = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}.json`;
+                let remoteExpenses = [];
+                let remotePayments = [];
+                
+                try {
+                    const getResponse = await fetch(fileUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3.raw'
+                        }
+                    });
+                    
+                    if (getResponse.ok) {
+                        const remoteData = await getResponse.json();
+                        if (remoteData.expenses && Array.isArray(remoteData.expenses)) {
+                            remoteExpenses = remoteData.expenses;
+                            remotePayments = remoteData.payments || [];
+                            console.log(`✅ Letti ${remoteExpenses.length} spese da GitHub`);
+                        }
+                    }
+                } catch (e) {
+                    console.log("ℹ️ Primo sync: nessun file su GitHub ancora");
+                }
+                
+                // ==== STEP 2: MERGE INTELLIGENTE ====
+                const mergedExpenses = mergeExpenses(expenses, remoteExpenses);
+                const mergedPayments = mergePayments(payments, remotePayments);
+                
+                // Salva merged data localmente
+                expenses = mergedExpenses;
+                payments = mergedPayments;
+                localStorage.setItem('americanOdysseyExpenses', JSON.stringify(mergedExpenses));
+                localStorage.setItem('americanOdysseyPayments', JSON.stringify(mergedPayments));
+                console.log(`✅ Merge completato: ${mergedExpenses.length} spese total`);
+                
+                // ==== STEP 3: SCRIVI SU GITHUB ====
+                const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}.json`;
+                const backupData = {
+                    timestamp: new Date().toISOString(),
+                    expenses: mergedExpenses,
+                    payments: mergedPayments,
+                    summary: {
+                        total: mergedExpenses.reduce((sum, e) => sum + e.amount, 0),
+                        count: mergedExpenses.length
+                    }
+                };
+                
+                const jsonContent = JSON.stringify(backupData, null, 2);
+                const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
+                
+                const uploadPayload = {
+                    message: `Sincronizzazione spese - ${new Date().toLocaleString('it-IT')}`,
+                    content: base64Content
+                };
+                
+                const putResponse = await fetch(uploadUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(uploadPayload)
+                });
+                
+                if (!putResponse.ok) {
+                    const error = await putResponse.json();
+                    throw new Error(error.message || 'Errore upload a GitHub');
+                }
+                
+                console.log("✅ Sincronizzazione completata!");
+                if (!silent) {
+                    showBackupStatus(`✅ Sincronizzazione completata!<br/>📊 ${mergedExpenses.length} spese sincronizzate`, 'success');
+                    setTimeout(() => closeBackupModal(), 2000);
+                }
+                render();
+                
+            } catch (error) {
+                console.error("❌ Errore sync:", error);
+                if (!silent) {
+                    showBackupStatus(`❌ Errore: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        // Auto-sync quando aggiungi una spesa
+        async function addExpenseAndSync() {
+            const desc = document.getElementById('expDesc').value;
+            const category = document.getElementById('expCategory').value;
+            const amount = parseFloat(document.getElementById('expAmount').value);
+            const day = parseInt(document.getElementById('expDay').value);
+            const person = document.getElementById('expPerson').value;
 
-            if (!token || !user || !repo) {
-                showBackupStatus('❌ Compila Token, Username e Repo', 'error');
+            if (!desc || !amount || amount <= 0 || day < 1 || day > 25) {
+                alert('Per favore compila tutti i campi correttamente');
                 return;
             }
 
-            // Salva credenziali per usi futuri
-            saveCredentialsToLocalStorage();
+            const newExpense = {
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                description: desc,
+                category,
+                amount,
+                day,
+                person,
+                updated: new Date().getTime()
+            };
 
-            const btn = document.getElementById('backupBtn');
-            btn.disabled = true;
-
-            showBackupStatus('<span class="loading-spinner"></span>Backup in corso...', 'loading');
-
-            try {
-                // Prepara i dati per il backup
-                const backupData = {
-                    timestamp: new Date().toISOString(),
-                    expenses: expenses,
-                    payments: payments || [],
-                    summary: {
-                        total: expenses.reduce((sum, e) => sum + e.amount, 0),
-                        count: expenses.length
-                    }
-                };
-
-                const jsonContent = JSON.stringify(backupData, null, 2);
-                const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
-
-                // 1. Crea il repository se non esiste
-                await createRepoIfNeeded(token, user, repo);
-
-                // 2. Carica il file
-                await uploadToGitHub(token, user, repo, fileName, base64Content);
-
-                showBackupStatus(`✅ Backup completato! <br/>📍 <a href="https://github.com/${user}/${repo}/blob/main/${fileName}.json" target="_blank" style="color: #667eea; text-decoration: underline;">Visualizza su GitHub</a>`, 'success');
-                
-                setTimeout(() => {
-                    closeBackupModal();
-                }, 2500);
-
-            } catch (error) {
-                console.error(error);
-                showBackupStatus(`❌ Errore: ${error.message}`, 'error');
-            } finally {
-                btn.disabled = false;
-            }
+            expenses.push(newExpense);
+            saveExpenses(expenses);
+            renderExpenses();
+            
+            // Clear form
+            document.getElementById('expDesc').value = '';
+            document.getElementById('expAmount').value = '';
+            document.getElementById('expCategory').value = 'Attività';
+            document.getElementById('expPerson').value = 'Andrea';
+            
+            // Auto-sync a GitHub
+            console.log("🚀 Auto-sync dopo aggiunta spesa...");
+            await syncWithGitHub(true); // silent = true (no modal)
         }
 
         async function uploadToGitHub(token, user, repo, fileName, base64Content) {
@@ -3878,8 +3931,7 @@ function addTimestampToPayments(payments) {
             </div>
 
             <div style="display: flex; gap: 8px; margin-top: 12px;">
-                <button id="backupBtn" onclick="performBackup()" style="flex: 1; padding: 10px; background: #2d2d2d; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Montserrat', sans-serif; transition: all 0.2s;">💾 Backup Ora</button>
-                <button id="restoreBtn" onclick="restoreFromGitHub()" style="flex: 1; padding: 10px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Montserrat', sans-serif; transition: all 0.2s;">📥 Ripristina</button>
+                <button id="syncBtn" onclick="syncWithGitHub()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Montserrat', sans-serif; transition: all 0.2s; font-size: 14px;">🔄 Sincronizza Tutto</button>
             </div>
 
             <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -3888,10 +3940,11 @@ function addTimestampToPayments(payments) {
 
             <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e0e0e0;">
                 <p style="font-size: 11px; color: #888; line-height: 1.6;">
-                    <strong>Sincronizzazione Multi-Dispositivo:</strong><br/>
-                    📱 PC: Inserisci token → "💾 Backup Ora"<br/>
-                    📲 iPhone: Inserisci token → "📥 Ripristina"<br/>
-                    ✅ I dati sono sincronizzati!
+                    <strong>⚡ Come Funziona:</strong><br/>
+                    1️⃣ Aggiungi una spesa → auto-salva su GitHub<br/>
+                    2️⃣ Click "🔄 Sincronizza Tutto" → carica/salva tutto<br/>
+                    3️⃣ Multi-dispositivo: stessi dati ovunque!<br/>
+                    ✅ Sempre sincronizzato!
                 </p>
             </div>
 

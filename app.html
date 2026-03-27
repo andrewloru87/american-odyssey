@@ -3625,7 +3625,7 @@ function addTimestampToPayments(payments) {
                         method: 'GET',
                         headers: {
                             'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json'
+                            'Accept': 'application/vnd.github.v3+json'  // ← NO .raw, così ottengo i metadati!
                         }
                     });
                     
@@ -3633,13 +3633,13 @@ function addTimestampToPayments(payments) {
                     
                     if (shaResponse.ok) {
                         const fileData = await shaResponse.json();
-                        console.log("SHA GET Response data:", fileData);
+                        console.log("SHA GET Response metadata:", fileData.sha, fileData.name);
                         
                         if (fileData.sha) {
                             sha = fileData.sha;
                             console.log("✅ SHA ottenuto:", sha);
                         } else {
-                            console.log("⚠️ Response OK ma SHA mancante");
+                            console.log("⚠️ Response OK ma SHA mancante in:", Object.keys(fileData));
                         }
                     } else {
                         console.log("ℹ️ File non esiste (status " + shaResponse.status + "), sarà creato nuovo");

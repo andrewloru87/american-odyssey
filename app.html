@@ -3617,36 +3617,8 @@ function addTimestampToPayments(payments) {
                 // ==== STEP 3: SCRIVI SU GITHUB ====
                 const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}.json`;
                 
-                // ✅ CRITICO: Ottieni lo SHA del file esistente
-                let sha = null;
-                try {
-                    console.log("📋 Tentativo GET per ottenere SHA...");
-                    const shaResponse = await fetch(uploadUrl, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json'  // ← NO .raw, così ottengo i metadati!
-                        }
-                    });
-                    
-                    console.log("SHA GET Response status:", shaResponse.status);
-                    
-                    if (shaResponse.ok) {
-                        const fileData = await shaResponse.json();
-                        console.log("SHA GET Response metadata:", fileData.sha, fileData.name);
-                        
-                        if (fileData.sha) {
-                            sha = fileData.sha;
-                            console.log("✅ SHA ottenuto:", sha);
-                        } else {
-                            console.log("⚠️ Response OK ma SHA mancante in:", Object.keys(fileData));
-                        }
-                    } else {
-                        console.log("ℹ️ File non esiste (status " + shaResponse.status + "), sarà creato nuovo");
-                    }
-                } catch (e) {
-                    console.log("ℹ️ Errore GET SHA (normale se primo upload):", e.message);
-                }
+                // ✅ SOLUZIONE DEFINITIVA: Prova PUT diretto (no SHA check)
+                // Se fallisce, GitHub ci dirà cosa fare
                 
                 const backupData = {
                     timestamp: new Date().toISOString(),
@@ -3661,22 +3633,14 @@ function addTimestampToPayments(payments) {
                 const jsonContent = JSON.stringify(backupData, null, 2);
                 const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
                 
-                const uploadPayload = {
+                // ===== TENTATIVO 1: PUT senza SHA =====
+                console.log("📤 Tentativo 1: PUT senza SHA...");
+                let uploadPayload = {
                     message: `Sincronizzazione spese - ${new Date().toLocaleString('it-IT')}`,
                     content: base64Content
                 };
                 
-                // ✅ Aggiungi SHA SOLO se è definito e non undefined
-                if (sha && sha !== 'undefined' && sha !== null) {
-                    uploadPayload.sha = sha;
-                    console.log("🔄 Aggiornamento file con SHA:", sha);
-                } else {
-                    console.log("✨ Creazione nuovo file (nessun SHA)");
-                }
-                
-                console.log("📤 PUT Payload:", uploadPayload);
-                
-                const putResponse = await fetch(uploadUrl, {
+                let putResponse = await fetch(uploadUrl, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `token ${token}`,
@@ -3685,6 +3649,51 @@ function addTimestampToPayments(payments) {
                     },
                     body: JSON.stringify(uploadPayload)
                 });
+                
+                // ===== Se fallisce con 422, prova con DELETE + PUT =====
+                if (!putResponse.ok && putResponse.status === 422) {
+                    console.log("⚠️ Tentativo 1 fallito (422), provo DELETE + PUT...");
+                    
+                    try {
+                        // DELETE il file vecchio
+                        const deleteResponse = await fetch(uploadUrl, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify({
+                                message: 'Cancellazione file vecchio'
+                            })
+                        });
+                        
+                        console.log("DELETE status:", deleteResponse.status);
+                        
+                        // Aspetta un momento
+                        await new Promise(r => setTimeout(r, 500));
+                        
+                        // PUT il nuovo file
+                        console.log("📤 Tentativo 2: PUT dopo DELETE...");
+                        uploadPayload = {
+                            message: `Sincronizzazione spese - ${new Date().toLocaleString('it-IT')}`,
+                            content: base64Content
+                        };
+                        
+                        putResponse = await fetch(uploadUrl, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify(uploadPayload)
+                        });
+                        
+                        console.log("PUT dopo DELETE status:", putResponse.status);
+                    } catch (deleteError) {
+                        console.error("Errore DELETE:", deleteError);
+                    }
+                }
                 
                 if (!putResponse.ok) {
                     const error = await putResponse.json();

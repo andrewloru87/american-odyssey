@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-03-27T09:51:03.170Z",
+  "expenses": [
+    {
+      "id": "1774604831191ijqlicsax",
+      "description": "Voli",
+      "category": "Voli",
+      "amount": 1500,
+      "day": 1,
+      "person": "Andrea",
+      "updated": 1774604831191
+    }
+  ],
+  "payments": [
+    {
+      "id": "1774605063168gw9a3bu4o",
+      "from": "Andrea",
+      "to": "Monica",
+      "amount": 12,
+      "description": "11",
+      "date": "27/03/2026",
+      "updated": 1774605063168
+    }
+  ],
+  "summary": {
+    "total": 1500,
+    "count": 1
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-27T14:58:39.512Z",
+  "timestamp": "2026-03-27T14:59:01.818Z",
   "expenses": [
     {
       "id": "1774623261469zz4fo16d4",
@@ -18,6 +18,15 @@
       "day": 21,
       "person": "Andrea",
       "updated": 1774623509086
+    },
+    {
+      "id": "17746235418157xiss27d4",
+      "description": "Mandala",
+      "category": "Hotel",
+      "amount": 226.74,
+      "day": 22,
+      "person": "Andrea",
+      "updated": 1774623541815
     }
   ],
   "payments": [
@@ -32,7 +41,7 @@
     }
   ],
   "summary": {
-    "total": -5473.31,
-    "count": 2
+    "total": -5246.570000000001,
+    "count": 3
   }
 }

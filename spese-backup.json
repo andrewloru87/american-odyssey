@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-27T15:36:00.228Z",
+  "timestamp": "2026-03-27T15:36:29.669Z",
   "expenses": [
     {
       "id": "1774623261469zz4fo16d4",
@@ -135,6 +135,15 @@
       "day": 1,
       "person": "Andrea",
       "updated": 1774625760223
+    },
+    {
+      "id": "1774625789664tbtv18ill",
+      "description": "Esta",
+      "category": "Altro",
+      "amount": 154.06,
+      "day": 1,
+      "person": "Andrea",
+      "updated": 1774625789664
     }
   ],
   "payments": [
@@ -149,7 +158,7 @@
     }
   ],
   "summary": {
-    "total": -1004.8100000000018,
-    "count": 15
+    "total": -850.7500000000018,
+    "count": 16
   }
 }

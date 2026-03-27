@@ -3701,9 +3701,13 @@ function addTimestampToPayments(payments) {
                         const fileData = await shaResponse.json();
                         sha = fileData.sha;
                         console.log("✅ SHA recuperato per update");
+                    } else if (shaResponse.status === 404) {
+                        console.log("ℹ️ File non esiste ancora, sarà creato");
+                    } else {
+                        console.log("⚠️ Errore GET SHA:", shaResponse.status);
                     }
                 } catch (e) {
-                    console.log("ℹ️ Primo upload, nessun SHA");
+                    console.log("ℹ️ Primo upload, nessun SHA:", e.message);
                 }
                 
                 const backupData = {
@@ -3861,10 +3865,14 @@ function addTimestampToPayments(payments) {
                     if (shaResponse.ok) {
                         const fileData = await shaResponse.json();
                         sha = fileData.sha;
-                        console.log("✅ SHA recuperato");
+                        console.log("✅ SHA recuperato per update");
+                    } else if (shaResponse.status === 404) {
+                        console.log("ℹ️ File non esiste ancora, sarà creato");
+                    } else {
+                        console.log("⚠️ Errore GET SHA:", shaResponse.status);
                     }
                 } catch (e) {
-                    console.log("ℹ️ Primo upload, nessun SHA ancora");
+                    console.log("ℹ️ Primo upload, nessun SHA ancora:", e.message);
                 }
 
                 let uploadPayload = {

@@ -3900,6 +3900,45 @@ function addTimestampToPayments(payments) {
                     return;
                 }
 
+                // Se 422 e abbiamo SHA, riprova con GET fresh
+                if (putResponse.status === 422 && sha) {
+                    console.log("⚠️ 422 rilevato, riprovo con SHA fresco...");
+                    await new Promise(r => setTimeout(r, 200)); // attendi 200ms
+                    
+                    try {
+                        const shaResponse2 = await fetch(uploadUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        });
+                        
+                        if (shaResponse2.ok) {
+                            const fileData2 = await shaResponse2.json();
+                            uploadPayload.sha = fileData2.sha;
+                            console.log("✅ SHA aggiornato, retry...");
+                            
+                            const putResponse2 = await fetch(uploadUrl, {
+                                method: 'PUT',
+                                headers: {
+                                    'Authorization': `token ${token}`,
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/vnd.github.v3+json'
+                                },
+                                body: JSON.stringify(uploadPayload)
+                            });
+                            
+                            if (putResponse2.ok) {
+                                console.log("✅ Auto-sync completato dopo retry!");
+                                return;
+                            }
+                        }
+                    } catch (e) {
+                        console.log("Retry fallito:", e.message);
+                    }
+                }
+
                 console.error("❌ Auto-sync fallito:", putResponse.status);
             } catch (error) {
                 console.error("❌ Auto-sync error:", error);

@@ -1,15 +1,6 @@
 {
-  "timestamp": "2026-03-27T15:36:33.483Z",
+  "timestamp": "2026-03-27T15:37:08.326Z",
   "expenses": [
-    {
-      "id": "1774623261469zz4fo16d4",
-      "description": "Bonifici ",
-      "category": "💸 Pagamenti",
-      "amount": -5588,
-      "day": 1,
-      "person": "Monica",
-      "updated": 1774623261469
-    },
     {
       "id": "1774623509086lzg157jdd",
       "description": "Zion ",
@@ -158,7 +149,7 @@
     }
   ],
   "summary": {
-    "total": -850.7500000000018,
-    "count": 16
+    "total": 4737.25,
+    "count": 15
   }
 }

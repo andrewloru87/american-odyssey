@@ -3577,26 +3577,53 @@ function addTimestampToPayments(payments) {
                 }
                 console.log("🔄 Sync: caricamento + salvataggio...");
                 
-                // ==== STEP 1: LEGGI DA GITHUB ====
-                const fileUrl = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}.json`;
+                // ==== STEP 1: LEGGI ULTIMO FILE DA /backup/ ====
                 let remoteExpenses = [];
                 let remotePayments = [];
                 
                 try {
-                    const getResponse = await fetch(fileUrl, {
+                    // Lista tutti i file in /backup/
+                    const listUrl = `https://api.github.com/repos/${user}/${repo}/contents/backup`;
+                    const listResponse = await fetch(listUrl, {
                         method: 'GET',
                         headers: {
                             'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3.raw'
+                            'Accept': 'application/vnd.github.v3+json'
                         }
                     });
                     
-                    if (getResponse.ok) {
-                        const remoteData = await getResponse.json();
-                        if (remoteData.expenses && Array.isArray(remoteData.expenses)) {
-                            remoteExpenses = remoteData.expenses;
-                            remotePayments = remoteData.payments || [];
-                            console.log(`✅ Letti ${remoteExpenses.length} spese da GitHub`);
+                    if (listResponse.ok) {
+                        const files = await listResponse.json();
+                        
+                        // Trova l'ULTIMO file (ordina per nome DESC)
+                        const jsonFiles = files
+                            .filter(f => f.name.endsWith('.json') && f.name.startsWith('spese-backup'))
+                            .sort((a, b) => b.name.localeCompare(a.name));
+                        
+                        if (jsonFiles.length > 0) {
+                            const latestFile = jsonFiles[0];
+                            console.log(`✅ Trovato ultimo file: ${latestFile.name}`);
+                            
+                            // Leggi il contenuto dell'ultimo file
+                            const fileUrl = `https://api.github.com/repos/${user}/${repo}/contents/backup/${latestFile.name}`;
+                            const fileResponse = await fetch(fileUrl, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': `token ${token}`,
+                                    'Accept': 'application/vnd.github.v3.raw'
+                                }
+                            });
+                            
+                            if (fileResponse.ok) {
+                                const remoteData = await fileResponse.json();
+                                if (remoteData.expenses && Array.isArray(remoteData.expenses)) {
+                                    remoteExpenses = remoteData.expenses;
+                                    remotePayments = remoteData.payments || [];
+                                    console.log(`✅ Letti ${remoteExpenses.length} spese da GitHub`);
+                                }
+                            }
+                        } else {
+                            console.log("ℹ️ Nessun file backup trovato, primo sync");
                         }
                     }
                 } catch (e) {
@@ -3614,11 +3641,10 @@ function addTimestampToPayments(payments) {
                 localStorage.setItem('americanOdysseyPayments', JSON.stringify(mergedPayments));
                 console.log(`✅ Merge completato: ${mergedExpenses.length} spese total`);
                 
-                // ==== STEP 3: SCRIVI SU GITHUB ====
-                const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}.json`;
-                
-                // ✅ SOLUZIONE DEFINITIVA: Prova PUT diretto (no SHA check)
-                // Se fallisce, GitHub ci dirà cosa fare
+                // ==== STEP 3: SCRIVI NUOVO FILE IN /backup/ ====
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                const newFileName = `backup/spese-backup-${timestamp}`;
+                const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/${newFileName}.json`;
                 
                 const backupData = {
                     timestamp: new Date().toISOString(),
@@ -3633,14 +3659,13 @@ function addTimestampToPayments(payments) {
                 const jsonContent = JSON.stringify(backupData, null, 2);
                 const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
                 
-                // ===== TENTATIVO 1: PUT senza SHA =====
-                console.log("📤 Tentativo 1: PUT senza SHA...");
-                let uploadPayload = {
+                console.log("📤 PUT nuovo file:", newFileName);
+                const uploadPayload = {
                     message: `Sincronizzazione spese - ${new Date().toLocaleString('it-IT')}`,
                     content: base64Content
                 };
                 
-                let putResponse = await fetch(uploadUrl, {
+                const putResponse = await fetch(uploadUrl, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `token ${token}`,
@@ -3649,51 +3674,6 @@ function addTimestampToPayments(payments) {
                     },
                     body: JSON.stringify(uploadPayload)
                 });
-                
-                // ===== Se fallisce con 422, prova con DELETE + PUT =====
-                if (!putResponse.ok && putResponse.status === 422) {
-                    console.log("⚠️ Tentativo 1 fallito (422), provo DELETE + PUT...");
-                    
-                    try {
-                        // DELETE il file vecchio
-                        const deleteResponse = await fetch(uploadUrl, {
-                            method: 'DELETE',
-                            headers: {
-                                'Authorization': `token ${token}`,
-                                'Accept': 'application/vnd.github.v3+json'
-                            },
-                            body: JSON.stringify({
-                                message: 'Cancellazione file vecchio'
-                            })
-                        });
-                        
-                        console.log("DELETE status:", deleteResponse.status);
-                        
-                        // Aspetta un momento
-                        await new Promise(r => setTimeout(r, 500));
-                        
-                        // PUT il nuovo file
-                        console.log("📤 Tentativo 2: PUT dopo DELETE...");
-                        uploadPayload = {
-                            message: `Sincronizzazione spese - ${new Date().toLocaleString('it-IT')}`,
-                            content: base64Content
-                        };
-                        
-                        putResponse = await fetch(uploadUrl, {
-                            method: 'PUT',
-                            headers: {
-                                'Authorization': `token ${token}`,
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/vnd.github.v3+json'
-                            },
-                            body: JSON.stringify(uploadPayload)
-                        });
-                        
-                        console.log("PUT dopo DELETE status:", putResponse.status);
-                    } catch (deleteError) {
-                        console.error("Errore DELETE:", deleteError);
-                    }
-                }
                 
                 if (!putResponse.ok) {
                     const error = await putResponse.json();
@@ -3763,10 +3743,13 @@ function addTimestampToPayments(payments) {
 
             try {
                 const { token, user, repo } = JSON.parse(saved);
-                const fileName = 'spese-backup';
+                
+                // ✅ Usa cartella /backup/ con timestamp - evita conflitti SHA!
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                const fileName = `backup/spese-backup-${timestamp}`;
                 const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}.json`;
                 
-                console.log("📤 Auto-sync: scrivo il file con TUTTE le spese correnti...");
+                console.log("📤 Auto-sync: file:", fileName);
 
                 // Prepara payload con TUTTE le spese correnti
                 const backupData = {
@@ -3782,7 +3765,6 @@ function addTimestampToPayments(payments) {
                 const jsonContent = JSON.stringify(backupData, null, 2);
                 const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
 
-                // Tentativo 1: PUT senza SHA
                 let uploadPayload = {
                     message: `Auto-sync spese - ${new Date().toLocaleString('it-IT')}`,
                     content: base64Content
@@ -3799,45 +3781,11 @@ function addTimestampToPayments(payments) {
                 });
 
                 if (putResponse.ok) {
-                    console.log("✅ Auto-sync completato!");
+                    console.log("✅ Auto-sync completato:", fileName);
                     return;
                 }
 
-                // Se fallisce con 422, prova DELETE + PUT
-                if (putResponse.status === 422) {
-                    console.log("⚠️ Tentativo 1 fallito, provo DELETE + PUT...");
-                    
-                    try {
-                        await fetch(uploadUrl, {
-                            method: 'DELETE',
-                            headers: {
-                                'Authorization': `token ${token}`,
-                                'Accept': 'application/vnd.github.v3+json'
-                            },
-                            body: JSON.stringify({ message: 'Auto-delete' })
-                        });
-
-                        await new Promise(r => setTimeout(r, 300));
-
-                        putResponse = await fetch(uploadUrl, {
-                            method: 'PUT',
-                            headers: {
-                                'Authorization': `token ${token}`,
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/vnd.github.v3+json'
-                            },
-                            body: JSON.stringify(uploadPayload)
-                        });
-
-                        if (putResponse.ok) {
-                            console.log("✅ Auto-sync completato (dopo DELETE)!");
-                        } else {
-                            console.error("❌ Auto-sync fallito anche dopo DELETE");
-                        }
-                    } catch (e) {
-                        console.error("❌ Auto-sync error:", e.message);
-                    }
-                }
+                console.error("❌ Auto-sync fallito:", putResponse.status);
             } catch (error) {
                 console.error("❌ Auto-sync error:", error);
             }

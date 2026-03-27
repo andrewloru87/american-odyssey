@@ -3103,7 +3103,18 @@ function addTimestampToPayments(payments) {
                 return;
             }
 
-            expenses.push({ description: desc, category, amount, day, person });
+            // ✅ Aggiungi ID unico e timestamp per sincronizzazione multi-dispositivo
+            const newExpense = {
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                description: desc,
+                category,
+                amount,
+                day,
+                person,
+                updated: new Date().getTime()
+            };
+
+            expenses.push(newExpense);
             saveExpenses(expenses);
             
             // Clear form

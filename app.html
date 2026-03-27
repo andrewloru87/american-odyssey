@@ -3794,20 +3794,20 @@ function addTimestampToPayments(payments) {
         }
  
         // ===== MERGE INTELLIGENTE =====
-        // Leggi i dati locali PRIMA di importare
-        const localExpenses = JSON.parse(localStorage.getItem('expenses') || '[]');
-        const localPayments = JSON.parse(localStorage.getItem('payments') || '[]');
+        // Leggi i dati locali PRIMA di importare (usando le KEY corrette!)
+        const localExpenses = JSON.parse(localStorage.getItem('americanOdysseyExpenses') || '[]');
+        const localPayments = JSON.parse(localStorage.getItem('americanOdysseyPayments') || '[]');
  
         // Unisci i dati (deduplicazione per ID)
         const mergedExpenses = mergeExpenses(localExpenses, backupData.expenses);
         const mergedPayments = mergePayments(localPayments, backupData.payments || []);
  
-        // Salva con timestamp
+        // Salva con timestamp (usando le KEY corrette!)
         expenses = mergedExpenses;
         payments = mergedPayments;
         
-        localStorage.setItem('expenses', JSON.stringify(mergedExpenses));
-        localStorage.setItem('payments', JSON.stringify(mergedPayments));
+        localStorage.setItem('americanOdysseyExpenses', JSON.stringify(mergedExpenses));
+        localStorage.setItem('americanOdysseyPayments', JSON.stringify(mergedPayments));
  
         showBackupStatus(`✅ Sincronizzazione completata!<br/>📊 ${mergedExpenses.length} spese sincronizzate`, 'success');
  

@@ -3643,54 +3643,30 @@ function addTimestampToPayments(payments) {
                 }
                 console.log("🔄 Sync: caricamento + salvataggio...");
                 
-                // ==== STEP 1: LEGGI ULTIMO FILE DA /backup/ ====
+                // ==== STEP 1: LEGGI FILE FISSO ====
                 let remoteExpenses = [];
                 let remotePayments = [];
                 
                 try {
-                    // Lista tutti i file in /backup/
-                    const listUrl = `https://api.github.com/repos/${user}/${repo}/contents/backup`;
-                    const listResponse = await fetch(listUrl, {
+                    // Leggi il file FISSO (non timestamp!)
+                    const fileUrl = `https://api.github.com/repos/${user}/${repo}/contents/spese-backup.json`;
+                    const fileResponse = await fetch(fileUrl, {
                         method: 'GET',
                         headers: {
                             'Authorization': `token ${token}`,
-                            'Accept': 'application/vnd.github.v3+json'
+                            'Accept': 'application/vnd.github.v3.raw'
                         }
                     });
                     
-                    if (listResponse.ok) {
-                        const files = await listResponse.json();
-                        
-                        // Trova l'ULTIMO file (ordina per nome DESC)
-                        const jsonFiles = files
-                            .filter(f => f.name.endsWith('.json') && f.name.startsWith('spese-backup'))
-                            .sort((a, b) => b.name.localeCompare(a.name));
-                        
-                        if (jsonFiles.length > 0) {
-                            const latestFile = jsonFiles[0];
-                            console.log(`✅ Trovato ultimo file: ${latestFile.name}`);
-                            
-                            // Leggi il contenuto dell'ultimo file
-                            const fileUrl = `https://api.github.com/repos/${user}/${repo}/contents/backup/${latestFile.name}`;
-                            const fileResponse = await fetch(fileUrl, {
-                                method: 'GET',
-                                headers: {
-                                    'Authorization': `token ${token}`,
-                                    'Accept': 'application/vnd.github.v3.raw'
-                                }
-                            });
-                            
-                            if (fileResponse.ok) {
-                                const remoteData = await fileResponse.json();
-                                if (remoteData.expenses && Array.isArray(remoteData.expenses)) {
-                                    remoteExpenses = remoteData.expenses;
-                                    remotePayments = remoteData.payments || [];
-                                    console.log(`✅ Letti ${remoteExpenses.length} spese da GitHub`);
-                                }
-                            }
-                        } else {
-                            console.log("ℹ️ Nessun file backup trovato, primo sync");
+                    if (fileResponse.ok) {
+                        const remoteData = await fileResponse.json();
+                        if (remoteData.expenses && Array.isArray(remoteData.expenses)) {
+                            remoteExpenses = remoteData.expenses;
+                            remotePayments = remoteData.payments || [];
+                            console.log(`✅ Letti ${remoteExpenses.length} spese da GitHub`);
                         }
+                    } else {
+                        console.log("ℹ️ Primo sync: file non esiste ancora");
                     }
                 } catch (e) {
                     console.log("ℹ️ Primo sync: nessun file su GitHub ancora");
@@ -3707,10 +3683,28 @@ function addTimestampToPayments(payments) {
                 localStorage.setItem('americanOdysseyPayments', JSON.stringify(mergedPayments));
                 console.log(`✅ Merge completato: ${mergedExpenses.length} spese total`);
                 
-                // ==== STEP 3: SCRIVI NUOVO FILE IN /backup/ ====
-                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-                const newFileName = `backup/spese-backup-${timestamp}`;
-                const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/${newFileName}.json`;
+                // ==== STEP 3: SCRIVI FILE FISSO ====
+                const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/spese-backup.json`;
+                
+                // ✅ OTTIENI SHA per l'update
+                let sha = null;
+                try {
+                    const shaResponse = await fetch(uploadUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    if (shaResponse.ok) {
+                        const fileData = await shaResponse.json();
+                        sha = fileData.sha;
+                        console.log("✅ SHA recuperato per update");
+                    }
+                } catch (e) {
+                    console.log("ℹ️ Primo upload, nessun SHA");
+                }
                 
                 const backupData = {
                     timestamp: new Date().toISOString(),
@@ -3725,11 +3719,16 @@ function addTimestampToPayments(payments) {
                 const jsonContent = JSON.stringify(backupData, null, 2);
                 const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
                 
-                console.log("📤 PUT nuovo file:", newFileName);
+                console.log("📤 PUT file fisso: spese-backup.json");
                 const uploadPayload = {
                     message: `Sincronizzazione spese - ${new Date().toLocaleString('it-IT')}`,
                     content: base64Content
                 };
+                
+                // ✅ INCLUDI SHA se esiste
+                if (sha) {
+                    uploadPayload.sha = sha;
+                }
                 
                 const putResponse = await fetch(uploadUrl, {
                     method: 'PUT',
@@ -3828,12 +3827,11 @@ function addTimestampToPayments(payments) {
             try {
                 const { token, user, repo } = JSON.parse(saved);
                 
-                // ✅ Usa cartella /backup/ con timestamp - evita conflitti SHA!
-                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-                const fileName = `backup/spese-backup-${timestamp}`;
+                // ✅ USA FILE FISSO - non timestamp! Così PC e iPhone sincronizzano lo STESSO file
+                const fileName = `spese-backup`;
                 const uploadUrl = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}.json`;
                 
-                console.log("📤 Auto-sync: file:", fileName);
+                console.log("📤 Auto-sync: file fisso:", fileName);
 
                 // Prepara payload con TUTTE le spese correnti
                 const backupData = {
@@ -3849,10 +3847,35 @@ function addTimestampToPayments(payments) {
                 const jsonContent = JSON.stringify(backupData, null, 2);
                 const base64Content = btoa(unescape(encodeURIComponent(jsonContent)));
 
+                // ✅ OTTIENI SHA per il file esistente
+                let sha = null;
+                try {
+                    const shaResponse = await fetch(uploadUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    if (shaResponse.ok) {
+                        const fileData = await shaResponse.json();
+                        sha = fileData.sha;
+                        console.log("✅ SHA recuperato");
+                    }
+                } catch (e) {
+                    console.log("ℹ️ Primo upload, nessun SHA ancora");
+                }
+
                 let uploadPayload = {
                     message: `Auto-sync spese - ${new Date().toLocaleString('it-IT')}`,
                     content: base64Content
                 };
+
+                // ✅ INCLUDI SHA se esiste (obbligatorio per update)
+                if (sha) {
+                    uploadPayload.sha = sha;
+                }
 
                 let putResponse = await fetch(uploadUrl, {
                     method: 'PUT',
@@ -3865,7 +3888,7 @@ function addTimestampToPayments(payments) {
                 });
 
                 if (putResponse.ok) {
-                    console.log("✅ Auto-sync completato:", fileName);
+                    console.log("✅ Auto-sync completato!");
                     return;
                 }
 

@@ -3484,8 +3484,9 @@ function addTimestampToPayments(payments) {
         initializeCurrentDay();
         render();
         
-        // ===== CHIAMA AUTO-LOGIN AL CARICAMENTO =====
-        // autoLoginOnStartup(); // ← Rimosso: utente clicca "Sincronizza Tutto" per importare
+        // ===== AUTO-LOAD AL CARICAMENTO =====
+        // Carica automaticamente i dati da GitHub se le credenziali sono salvate
+        autoLoginOnStartup();
         
         // Scroll event per nascondere/mostrare la header
         const header = document.getElementById('header');

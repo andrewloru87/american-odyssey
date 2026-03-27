@@ -3545,15 +3545,31 @@ function addTimestampToPayments(payments) {
 
         // ===== SINCRONIZZAZIONE AUTOMATICA CON GITHUB =====
         async function syncWithGitHub(silent = false) {
-            // Leggi credenziali salvate
-            const saved = localStorage.getItem('odysseyGitHubCredentials');
-            if (!saved) {
-                if (!silent) showBackupStatus('❌ Nessuna credenziale salvata. Clicca ☁️ per configurare.', 'error');
-                return;
+            // ==== STEP 0: LEGGI CREDENZIALI ====
+            let token = document.getElementById('githubToken').value.trim();
+            let user = document.getElementById('githubUser').value.trim();
+            let repo = document.getElementById('githubRepo').value.trim();
+            
+            // Se non nel form, prova a leggerle dal localStorage
+            if (!token || !user || !repo) {
+                const saved = localStorage.getItem('odysseyGitHubCredentials');
+                if (!saved) {
+                    if (!silent) showBackupStatus('❌ Inserisci Token, Username e Repo per sincronizzare.', 'error');
+                    return;
+                }
+                const creds = JSON.parse(saved);
+                token = creds.token;
+                user = creds.user;
+                repo = creds.repo;
+            }
+            
+            // ✅ Salva credenziali per usi futuri
+            if (token && user && repo) {
+                localStorage.setItem('odysseyGitHubCredentials', JSON.stringify({ token, user, repo }));
+                console.log("✅ Credenziali salvate nel browser");
             }
             
             try {
-                const { token, user, repo } = JSON.parse(saved);
                 const fileName = 'spese-backup';
                 
                 if (!silent) {

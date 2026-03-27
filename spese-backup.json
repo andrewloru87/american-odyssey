@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-27T15:12:44.326Z",
+  "timestamp": "2026-03-27T15:13:08.608Z",
   "expenses": [
     {
       "id": "1774623261469zz4fo16d4",
@@ -88,6 +88,15 @@
       "day": 1,
       "person": "Andrea",
       "updated": 1774624364322
+    },
+    {
+      "id": "1774624388604ff4p7ihoe",
+      "description": "Parchi pass",
+      "category": "Biglietti",
+      "amount": 70.49,
+      "day": 1,
+      "person": "Andrea",
+      "updated": 1774624388604
     }
   ],
   "payments": [
@@ -102,7 +111,7 @@
     }
   ],
   "summary": {
-    "total": -1285.6400000000012,
-    "count": 10
+    "total": -1215.1500000000012,
+    "count": 11
   }
 }

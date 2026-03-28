@@ -4311,6 +4311,7 @@ function addTimestampToPayments(payments) {
                             </div>
                         </div>
                         <div class="day-desc">${day.description}</div>
+                        ${!day.isCountdown ? `<button onclick="openDayDetails(${day.number})" style="margin-top: 12px; width: 100%; padding: 10px; background: linear-gradient(135deg, #7FECE5 0%, #FFBBE2 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s;">📖 Dettagli Completi</button>` : ''}
             `;
 
             if (currentTab === 'timeline') {
@@ -4629,6 +4630,12 @@ function addTimestampToPayments(payments) {
             // ⚡ Auto-sync quando cambi giorno
             console.log("📅 Auto-sync dopo cambio giorno...");
             autoSyncNewExpense();
+        }
+
+        function openDayDetails(dayNumber) {
+            // Apre il file HTML dettagliato del giorno
+            const dayFile = `day-${String(dayNumber).padStart(2, '0')}.html`;
+            window.open(dayFile, '_blank');
         }
 
         function toggleDetails(btn) {

@@ -6416,6 +6416,11 @@ function addTimestampToPayments(payments) {
                                         <option selected>Attività</option>
                                         <option>Pasti</option>
                                         <option>Altro</option>
+                                        <option>SHOW</option>
+                                        <option>PARCHI</option>
+                                        <option>METRO</option>
+                                        <option>SHOPPING</option>
+                                        <option>SOUVENIR</option>
                                         <option style="border-top: 1px solid #d0d0d0; margin-top: 8px; padding-top: 8px;">---</option>
                                         <option style="color: #ff6b6b; font-weight: 600;">💸 Pagamenti</option>
                                     </select>
@@ -6427,7 +6432,7 @@ function addTimestampToPayments(payments) {
                                     </div>
                                     <div>
                                         <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px;">Giorno</label>
-                                        <input type="number" id="expDay" value="${currentDayNum}" min="1" max="25" style="width: 100%; padding: 8px; border: 1px solid #d0d0d0; border-radius: 4px; font-size: 13px;">
+                                        <input type="number" id="expDay" value="${currentDayNum}" min="0" max="25" style="width: 100%; padding: 8px; border: 1px solid #d0d0d0; border-radius: 4px; font-size: 13px;">
                                     </div>
                                 </div>
                                 <div>
@@ -6447,7 +6452,7 @@ function addTimestampToPayments(payments) {
             `;
 
             // ===== SECTION 3: SPESE PER CATEGORIA (GRAFICO A TORTA) =====
-            const categories = ['Voli', 'Hotel', 'Auto', 'Cibo', 'Drinks', 'Tour', 'Taxi', 'Biglietti', 'Trasporti', 'Attività', 'Pasti', 'Altro'];
+            const categories = ['Voli', 'Hotel', 'Auto', 'Cibo', 'Drinks', 'Tour', 'Taxi', 'Biglietti', 'Trasporti', 'Attività', 'Pasti', 'Altro', 'SHOW', 'PARCHI', 'METRO', 'SHOPPING', 'SOUVENIR'];
             const categoryEmojis = {
                 'Voli': '✈️',
                 'Hotel': '🏨',
@@ -6460,13 +6465,18 @@ function addTimestampToPayments(payments) {
                 'Trasporti': '🚗',
                 'Attività': '🎫',
                 'Pasti': '🍽️',
-                'Altro': '💰'
+                'Altro': '💰',
+                'SHOW': '🎭',
+                'PARCHI': '🎢',
+                'METRO': '🚇',
+                'SHOPPING': '🛍️',
+                'SOUVENIR': '🎁'
             };
 
             // Calcola i dati per il grafico
             const categoryData = [];
             const categoryLabels = [];
-            const categoryColors = ['#7FECE5', '#FFBBE2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b', '#38f9d7', '#fa709a', '#fee140', '#30cfd0', '#330867'];
+            const categoryColors = ['#7FECE5', '#FFBBE2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b', '#38f9d7', '#fa709a', '#fee140', '#30cfd0', '#330867', '#ff6b9d', '#c44569', '#ffa502', '#26de81', '#eb3b5a'];
             
             categories.forEach((cat, idx) => {
                 const catExpenses = expenses.filter(e => e.category === cat);
@@ -6588,7 +6598,25 @@ function addTimestampToPayments(payments) {
                                 <tbody>
             `;
 
-            let cumulativeTotal = 0;
+            // ✅ Aggiungi sezione Giorno 0 (Pre-Viaggio)
+            const preViaggioExpenses = expenses.filter(e => e.day === 0);
+            const preViaggioAndrea = preViaggioExpenses.filter(e => e.person === 'Andrea').reduce((sum, e) => sum + e.amount, 0);
+            const preViaggioMonica = preViaggioExpenses.filter(e => e.person === 'Monica').reduce((sum, e) => sum + e.amount, 0);
+            const preViaggioTotal = preViaggioAndrea + preViaggioMonica;
+            
+            let cumulativeTotal = preViaggioTotal;
+            
+            if (preViaggioTotal > 0) {
+                html += `
+                                    <tr style="background: #fff3cd; font-weight: 600;">
+                                        <td><strong>📌 PRE-VIAGGIO</strong></td>
+                                        <td style="text-align: right;">${preViaggioAndrea > 0 ? formatCurrency(preViaggioAndrea) : '-'}</td>
+                                        <td style="text-align: right;">${preViaggioMonica > 0 ? formatCurrency(preViaggioMonica) : '-'}</td>
+                                        <td style="text-align: right; color: #7FECE5; font-weight: 600;">${formatCurrency(cumulativeTotal)}</td>
+                                    </tr>
+                `;
+            }
+
             for (let day = 1; day <= 25; day++) {
                 const dayExpenses = expenses.filter(e => e.day === day);
                 const dayAndrea = dayExpenses.filter(e => e.person === 'Andrea').reduce((sum, e) => sum + e.amount, 0);
@@ -6631,13 +6659,14 @@ function addTimestampToPayments(payments) {
                 html += '<div style="text-align: center; color: #999; padding: 20px;">Nessuna spesa registrata</div>';
             } else {
                 expenses.forEach((e, idx) => {
+                    const dayLabel = e.day === 0 ? '📌 PRE-VIAGGIO' : `Day ${String(e.day).padStart(2, '0')}`;
                     html += `
-                        <div style="margin-bottom: 8px; padding: 8px; background: white; border: 1px solid #e0e0e0; border-radius: 4px;">
+                        <div style="margin-bottom: 8px; padding: 8px; background: white; border: 1px solid #e0e0e0; border-radius: 4px; ${e.day === 0 ? 'border-left: 4px solid #ff9800;' : ''}">
                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
                                 <div>
                                     <div style="font-weight: 600; color: #2d2d2d; font-size: 13px;">${e.description}</div>
                                     <div style="font-size: 11px; color: #999; margin-top: 2px;">
-                                        Day ${String(e.day).padStart(2, '0')} • ${e.category} • ${e.person}
+                                        ${dayLabel} • ${e.category} • ${e.person}
                                     </div>
                                 </div>
                                 <div style="text-align: right;">
@@ -6966,8 +6995,8 @@ function addTimestampToPayments(payments) {
             const day = parseInt(document.getElementById('editExpDay').value);
             const person = document.getElementById('editExpPerson').value;
             
-            if (!desc || !category || !amount || amount <= 0 || !day || day < 1 || day > 25) {
-                alert('Tutti i campi sono obbligatori e devono essere validi!');
+            if (!desc || !category || !amount || amount <= 0 || day === '' || day === null || day === undefined || day < 0 || day > 25) {
+                alert('Tutti i campi sono obbligatori e devono essere validi! (Giorno: 0-25, dove 0 = pre-viaggio)');
                 return;
             }
             
@@ -8068,8 +8097,8 @@ function addTimestampToPayments(payments) {
             const day = parseInt(document.getElementById('expDay').value);
             const person = document.getElementById('expPerson').value;
 
-            if (!desc || !amount || amount <= 0 || day < 1 || day > 25) {
-                alert('Per favore compila tutti i campi correttamente');
+            if (!desc || !amount || amount <= 0 || day === '' || day === null || day === undefined || day < 0 || day > 25) {
+                alert('Per favore compila tutti i campi correttamente (Giorno: 0-25, dove 0 = pre-viaggio)');
                 return;
             }
 
@@ -8550,6 +8579,11 @@ function toggleTimeline(el) {
                         <option>Attività</option>
                         <option>Pasti</option>
                         <option>Altro</option>
+                        <option>SHOW</option>
+                        <option>PARCHI</option>
+                        <option>METRO</option>
+                        <option>SHOPPING</option>
+                        <option>SOUVENIR</option>
                         <option style="border-top: 1px solid #d0d0d0; margin-top: 8px; padding-top: 8px;">---</option>
                         <option style="color: #ff6b6b; font-weight: 600;">💸 Pagamenti</option>
                     </select>
@@ -8561,7 +8595,7 @@ function toggleTimeline(el) {
                     </div>
                     <div>
                         <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px;">Giorno</label>
-                        <input type="number" id="editExpDay" min="1" max="25" style="width: 100%; padding: 8px; border: 1px solid #d0d0d0; border-radius: 4px; font-size: 13px; box-sizing: border-box;">
+                        <input type="number" id="editExpDay" min="0" max="25" style="width: 100%; padding: 8px; border: 1px solid #d0d0d0; border-radius: 4px; font-size: 13px; box-sizing: border-box;">
                     </div>
                 </div>
                 <div>

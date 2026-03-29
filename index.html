@@ -6419,11 +6419,11 @@ function addTimestampToPayments(payments) {
                                         <option selected>Attività</option>
                                         <option>Pasti</option>
                                         <option>Altro</option>
-                                        <option>Show</option>
-                                        <option>Parchi</option>
-                                        <option>Metro</option>
-                                        <option>Shopping</option>
-                                        <option>Souvenir</option>
+                                        <option>SHOW</option>
+                                        <option>PARCHI</option>
+                                        <option>METRO</option>
+                                        <option>SHOPPING</option>
+                                        <option>SOUVENIR</option>
                                         <option style="border-top: 1px solid #d0d0d0; margin-top: 8px; padding-top: 8px;">---</option>
                                         <option style="color: #ff6b6b; font-weight: 600;">💸 Pagamenti</option>
                                     </select>
@@ -7394,7 +7394,6 @@ function addTimestampToPayments(payments) {
                             </div>
                         </div>
                         <div class="day-desc">${day.description}</div>
-                        ${!day.isCountdown ? `<button onclick="openDayDetails(${day.number})" style="margin-top: 12px; width: 100%; padding: 10px; background: linear-gradient(135deg, #7FECE5 0%, #FFBBE2 100%); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.2s;">📖 Dettagli Completi</button>` : ''}
             `;
 
             if (currentTab === 'timeline') {

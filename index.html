@@ -1314,8 +1314,8 @@ function toggleTimeline(el) {
         
         <div class="sidebar-section">
             <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                <button class="nav-btn" onclick="currentDay = 0; switchTab(event, 'timeline'); toggleMenu(); render();" style="flex: 1; padding: 10px; background: #2d2d2d; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;">🏠 Home</button>
-                <button class="nav-btn" onclick="switchTab(event, 'costs'); toggleMenu();" style="flex: 1; padding: 10px; background: #2d2d2d; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;">💰 Spese</button>
+                <button class="nav-btn" onclick="switchTab(event, 'timeline'); closeSidebar(); render();" style="flex: 1; padding: 10px; background: #2d2d2d; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;">🏠 Home</button>
+                <button class="nav-btn" onclick="switchTab(event, 'costs'); closeSidebar();" style="flex: 1; padding: 10px; background: #2d2d2d; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;">💰 Spese</button>
             </div>
         </div>
         
@@ -1325,11 +1325,11 @@ function toggleTimeline(el) {
                 <span class="sidebar-accordion-toggle">▼</span>
             </div>
             <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(0, event)">Day 01 - Il grande salto</div>
-                <div class="sidebar-item" onclick="goToDay(1, event)">Day 02 - Central Park</div>
-                <div class="sidebar-item" onclick="goToDay(2, event)">Day 03 - Statua Libertà</div>
-                <div class="sidebar-item" onclick="goToDay(3, event)">Day 04 - Broadway</div>
-                <div class="sidebar-item" onclick="goToDay(4, event)">Day 05 - MoMA & Top of Rock</div>
+                <div class="sidebar-item" onclick="goToDay(1, event)">Day 01 - Il grande salto</div>
+                <div class="sidebar-item" onclick="goToDay(2, event)">Day 02 - Central Park</div>
+                <div class="sidebar-item" onclick="goToDay(3, event)">Day 03 - Statua Libertà</div>
+                <div class="sidebar-item" onclick="goToDay(4, event)">Day 04 - Broadway</div>
+                <div class="sidebar-item" onclick="goToDay(5, event)">Day 05 - MoMA & Top of Rock</div>
             </div>
         </div>
         
@@ -1339,7 +1339,7 @@ function toggleTimeline(el) {
                 <span class="sidebar-accordion-toggle">▼</span>
             </div>
             <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(5, event)">Day 06 - Coast to Coast</div>
+                <div class="sidebar-item" onclick="goToDay(6, event)">Day 06 - Coast to Coast</div>
             </div>
         </div>
         
@@ -1349,15 +1349,15 @@ function toggleTimeline(el) {
                 <span class="sidebar-accordion-toggle">▼</span>
             </div>
             <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(6, event)">Day 07 - San Francisco</div>
-                <div class="sidebar-item" onclick="goToDay(7, event)">Day 08 - Road Trip!</div>
-                <div class="sidebar-item" onclick="goToDay(8, event)">Day 09 - Yosemite</div>
-                <div class="sidebar-item" onclick="goToDay(9, event)">Day 10 - Sequoie giganti</div>
-                <div class="sidebar-item" onclick="goToDay(10, event)">Day 11 - → Los Angeles</div>
-                <div class="sidebar-item" onclick="goToDay(11, event)">Day 12 - Hollywood</div>
-                <div class="sidebar-item" onclick="goToDay(12, event)">Day 13 - Disneyland</div>
-                <div class="sidebar-item" onclick="goToDay(13, event)">Day 14 - Universal VIP</div>
-                <div class="sidebar-item" onclick="goToDay(14, event)">Day 15 - California Adventure</div>
+                <div class="sidebar-item" onclick="goToDay(7, event)">Day 07 - San Francisco</div>
+                <div class="sidebar-item" onclick="goToDay(8, event)">Day 08 - Road Trip!</div>
+                <div class="sidebar-item" onclick="goToDay(9, event)">Day 09 - Yosemite</div>
+                <div class="sidebar-item" onclick="goToDay(10, event)">Day 10 - Sequoie giganti</div>
+                <div class="sidebar-item" onclick="goToDay(11, event)">Day 11 - → Los Angeles</div>
+                <div class="sidebar-item" onclick="goToDay(12, event)">Day 12 - Hollywood</div>
+                <div class="sidebar-item" onclick="goToDay(13, event)">Day 13 - Disneyland</div>
+                <div class="sidebar-item" onclick="goToDay(14, event)">Day 14 - Universal VIP</div>
+                <div class="sidebar-item" onclick="goToDay(15, event)">Day 15 - California Adventure</div>
             </div>
         </div>
         
@@ -1367,12 +1367,12 @@ function toggleTimeline(el) {
                 <span class="sidebar-accordion-toggle">▼</span>
             </div>
             <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(15, event)">Day 16 - Route 66</div>
-                <div class="sidebar-item" onclick="goToDay(16, event)">Day 17 - → Grand Canyon</div>
-                <div class="sidebar-item" onclick="goToDay(17, event)">Day 18 - Grand Canyon</div>
-                <div class="sidebar-item" onclick="goToDay(18, event)">Day 19 - Antelope Canyon</div>
-                <div class="sidebar-item" onclick="goToDay(19, event)">Day 20 - Monument Valley</div>
-                <div class="sidebar-item" onclick="goToDay(20, event)">Day 21 - Bryce & Zion</div>
+                <div class="sidebar-item" onclick="goToDay(16, event)">Day 16 - Route 66</div>
+                <div class="sidebar-item" onclick="goToDay(17, event)">Day 17 - → Grand Canyon</div>
+                <div class="sidebar-item" onclick="goToDay(18, event)">Day 18 - Grand Canyon</div>
+                <div class="sidebar-item" onclick="goToDay(19, event)">Day 19 - Antelope Canyon</div>
+                <div class="sidebar-item" onclick="goToDay(20, event)">Day 20 - Monument Valley</div>
+                <div class="sidebar-item" onclick="goToDay(21, event)">Day 21 - Bryce & Zion</div>
             </div>
         </div>
         
@@ -1382,9 +1382,9 @@ function toggleTimeline(el) {
                 <span class="sidebar-accordion-toggle">▼</span>
             </div>
             <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(21, event)">Day 22 - → Las Vegas</div>
-                <div class="sidebar-item" onclick="goToDay(22, event)">Day 23 - Las Vegas</div>
-                <div class="sidebar-item" onclick="goToDay(23, event)">Day 24 - Death Valley</div>
+                <div class="sidebar-item" onclick="goToDay(22, event)">Day 22 - → Las Vegas</div>
+                <div class="sidebar-item" onclick="goToDay(23, event)">Day 23 - Las Vegas</div>
+                <div class="sidebar-item" onclick="goToDay(24, event)">Day 24 - Death Valley</div>
             </div>
         </div>
         
@@ -1394,7 +1394,7 @@ function toggleTimeline(el) {
                 <span class="sidebar-accordion-toggle">▼</span>
             </div>
             <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(24, event)">Day 25 - Si torna a casa</div>
+                <div class="sidebar-item" onclick="goToDay(25, event)">Day 25 - Si torna a casa</div>
             </div>
         </div>
         
@@ -1406,6 +1406,8 @@ function toggleTimeline(el) {
             <div class="sidebar-item">🏨 13 hotel prenotati</div>
         </div>
     </div>
+    
+    <div class="overlay" id="overlay"></div>
     
     <header id="header">
         <h1>AMERICAN ODYSSEY</h1>
@@ -4802,6 +4804,16 @@ function addTimestampToPayments(payments) {
             sidebar.classList.toggle('open');
             overlay.classList.toggle('open');
         }
+        
+        function closeSidebar() {
+            const menuBtn = document.getElementById('menuBtn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            menuBtn.classList.remove('open');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+        }
 
         function toggleSidebarAccordion(header) {
             const content = header.nextElementSibling;
@@ -5797,29 +5809,20 @@ function toggleTimeline(el) {
         </div>
     </div>
 
-    <!-- CARICA SIDEBAR CONDIVISA -->
-    <script>
-        // Carica sidebar.html dinamicamente
-        fetch('sidebar.html')
-            .then(response => response.text())
-            .then(data => {
-                // Estrai solo il contenuto della sidebar (senza script)
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(data, 'text/html');
-                const sidebarDiv = doc.querySelector('.sidebar');
-                
-                if (sidebarDiv) {
-                    // Inserisci la sidebar nel body
-                    document.body.insertBefore(sidebarDiv, document.body.firstChild);
-                }
-            })
-            .catch(error => console.error('Errore caricamento sidebar:', error));
     
-function toggleTimeline(el) {
-    el.classList.toggle("active");
-}
-
-</script>
+    <script>
+        // Event listener per overlay click
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('overlay');
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
+            }
+        });
+        
+        function toggleTimeline(el) {
+            el.classList.toggle("active");
+        }
+    </script>
 
 </body>
 </html>

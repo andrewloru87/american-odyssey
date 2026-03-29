@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-29T19:14:51.272Z",
+  "timestamp": "2026-03-29T19:15:04.417Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -56,9 +56,8 @@
       "description": "Universal",
       "category": "Attività",
       "amount": 740.3,
-      "day": 1,
-      "person": "Andrea",
-      "updated": 1774624270141
+      "day": 14,
+      "person": "Andrea"
     },
     {
       "id": "1774624364322lz3c1f13v",

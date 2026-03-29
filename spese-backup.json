@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-29T19:16:42.979Z",
+  "timestamp": "2026-03-29T19:17:04.858Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -107,9 +107,8 @@
       "description": "Monument Valley",
       "category": "Tour",
       "amount": 170.68,
-      "day": 1,
-      "person": "Andrea",
-      "updated": 1774625745084
+      "day": 20,
+      "person": "Andrea"
     },
     {
       "id": "1774625760223ifd7g3ixh",

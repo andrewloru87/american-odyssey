@@ -1430,6 +1430,9 @@ function toggleTimeline(el) {
             <span></span>
             <span></span>
         </button>
+        <div id="currentDayDisplay" style="display: flex; align-items: center; justify-content: center; padding: 8px 12px; background: white; border-radius: 4px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 18px; color: #2d2d2d; letter-spacing: 1px;">
+            <span id="dayNumber">1</span>
+        </div>
         <button class="tab active" onclick="switchTab(event, 'timeline')">⏰ Timeline</button>
         <button class="tab" onclick="switchTab(event, 'bookings')">🎫 Prenotazioni</button>
         <button class="tab" onclick="switchTab(event, 'restaurants')">🍽️ Ristoranti</button>
@@ -7341,6 +7344,11 @@ function addTimestampToPayments(payments) {
             }
 
             const day = days[currentDay];
+            
+            // ✅ Aggiorna il numero del giorno nella barra header
+            const dayNumber = day.isCountdown ? '0' : String(day.number).padStart(2, '0');
+            document.getElementById('dayNumber').textContent = dayNumber;
+            
             const colors = [
                 'linear-gradient(135deg, #7FECE5 0%, #FFBBE2 100%)',
                 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',

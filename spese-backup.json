@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-29T19:15:57.945Z",
+  "timestamp": "2026-03-29T19:16:14.879Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -130,12 +130,11 @@
     },
     {
       "id": "17746260376102q6ceoh3e",
-      "description": "Usa",
+      "description": "VIE to NYC",
       "category": "Voli",
       "amount": 1714.36,
       "day": 1,
-      "person": "Andrea",
-      "updated": 1774626037610
+      "person": "Andrea"
     },
     {
       "id": "17748071846059ue29cms7",

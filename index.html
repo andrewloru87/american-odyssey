@@ -1319,82 +1319,88 @@ function toggleTimeline(el) {
             </div>
         </div>
         
+        <!-- COUNTDOWN DAYS -->
         <div class="sidebar-section">
-            <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
-                <span>🗽 NEW YORK</span>
-                <span class="sidebar-accordion-toggle">▼</span>
-            </div>
-            <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(1, event)">Day 01 - Il grande salto</div>
-                <div class="sidebar-item" onclick="goToDay(2, event)">Day 02 - Central Park</div>
-                <div class="sidebar-item" onclick="goToDay(3, event)">Day 03 - Statua Libertà</div>
-                <div class="sidebar-item" onclick="goToDay(4, event)">Day 04 - Broadway</div>
-                <div class="sidebar-item" onclick="goToDay(5, event)">Day 05 - MoMA & Top of Rock</div>
-            </div>
+            <div class="sidebar-section-title">⏳ Countdown</div>
+            <div id="countdownDays"></div>
         </div>
         
         <div class="sidebar-section">
-            <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
-                <span>✈️ TRANSATLANTIC</span>
-                <span class="sidebar-accordion-toggle">▼</span>
+            <div class="sidebar-section-title">📍 Giorni per Stato</div>
+            
+            <!-- NEW YORK -->
+            <div class="sidebar-accordion-item">
+                <div class="sidebar-accordion-header active" onclick="toggleSidebarAccordion(this)">
+                    <span>🗽 New York (5 giorni)</span>
+                    <span class="sidebar-accordion-toggle">▼</span>
+                </div>
+                <div class="sidebar-accordion-content active">
+                    <div class="sidebar-day-item" onclick="goToDay(1, event)">Day 01 - Il grande salto</div>
+                    <div class="sidebar-day-item" onclick="goToDay(2, event)">Day 02 - Central Park</div>
+                    <div class="sidebar-day-item" onclick="goToDay(3, event)">Day 03 - Statua Libertà</div>
+                    <div class="sidebar-day-item" onclick="goToDay(4, event)">Day 04 - Broadway</div>
+                    <div class="sidebar-day-item" onclick="goToDay(5, event)">Day 05 - MoMA & Top</div>
+                </div>
             </div>
-            <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(6, event)">Day 06 - Coast to Coast</div>
+
+            <!-- CALIFORNIA -->
+            <div class="sidebar-accordion-item">
+                <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
+                    <span>🌉 California (12 giorni)</span>
+                    <span class="sidebar-accordion-toggle">▼</span>
+                </div>
+                <div class="sidebar-accordion-content">
+                    <div class="sidebar-day-item" onclick="goToDay(6, event)">Day 06 - Coast to Coast</div>
+                    <div class="sidebar-day-item" onclick="goToDay(7, event)">Day 07 - San Francisco</div>
+                    <div class="sidebar-day-item" onclick="goToDay(8, event)">Day 08 - Road Trip!</div>
+                    <div class="sidebar-day-item" onclick="goToDay(9, event)">Day 09 - Yosemite</div>
+                    <div class="sidebar-day-item" onclick="goToDay(10, event)">Day 10 - Sequoie</div>
+                    <div class="sidebar-day-item" onclick="goToDay(11, event)">Day 11 - → LA</div>
+                    <div class="sidebar-day-item" onclick="goToDay(12, event)">Day 12 - Hollywood</div>
+                    <div class="sidebar-day-item" onclick="goToDay(13, event)">Day 13 - Disneyland</div>
+                    <div class="sidebar-day-item" onclick="goToDay(14, event)">Day 14 - Universal</div>
+                    <div class="sidebar-day-item" onclick="goToDay(15, event)">Day 15 - CA Adventure</div>
+                    <div class="sidebar-day-item" onclick="goToDay(16, event)">Day 16 - Route 66</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="sidebar-section">
-            <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
-                <span>🌉 CALIFORNIA</span>
-                <span class="sidebar-accordion-toggle">▼</span>
+
+            <!-- ARIZONA -->
+            <div class="sidebar-accordion-item">
+                <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
+                    <span>🏜️ Arizona (4 giorni)</span>
+                    <span class="sidebar-accordion-toggle">▼</span>
+                </div>
+                <div class="sidebar-accordion-content">
+                    <div class="sidebar-day-item" onclick="goToDay(17, event)">Day 17 - → Grand Canyon</div>
+                    <div class="sidebar-day-item" onclick="goToDay(18, event)">Day 18 - Grand Canyon</div>
+                    <div class="sidebar-day-item" onclick="goToDay(19, event)">Day 19 - Antelope Canyon</div>
+                    <div class="sidebar-day-item" onclick="goToDay(20, event)">Day 20 - Monument Valley</div>
+                </div>
             </div>
-            <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(7, event)">Day 07 - San Francisco</div>
-                <div class="sidebar-item" onclick="goToDay(8, event)">Day 08 - Road Trip!</div>
-                <div class="sidebar-item" onclick="goToDay(9, event)">Day 09 - Yosemite</div>
-                <div class="sidebar-item" onclick="goToDay(10, event)">Day 10 - Sequoie giganti</div>
-                <div class="sidebar-item" onclick="goToDay(11, event)">Day 11 - → Los Angeles</div>
-                <div class="sidebar-item" onclick="goToDay(12, event)">Day 12 - Hollywood</div>
-                <div class="sidebar-item" onclick="goToDay(13, event)">Day 13 - Disneyland</div>
-                <div class="sidebar-item" onclick="goToDay(14, event)">Day 14 - Universal VIP</div>
-                <div class="sidebar-item" onclick="goToDay(15, event)">Day 15 - California Adventure</div>
+
+            <!-- UTAH & NEVADA -->
+            <div class="sidebar-accordion-item">
+                <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
+                    <span>🎰 Utah & Nevada (4 giorni)</span>
+                    <span class="sidebar-accordion-toggle">▼</span>
+                </div>
+                <div class="sidebar-accordion-content">
+                    <div class="sidebar-day-item" onclick="goToDay(21, event)">Day 21 - Bryce & Zion</div>
+                    <div class="sidebar-day-item" onclick="goToDay(22, event)">Day 22 - → Las Vegas</div>
+                    <div class="sidebar-day-item" onclick="goToDay(23, event)">Day 23 - Las Vegas</div>
+                    <div class="sidebar-day-item" onclick="goToDay(24, event)">Day 24 - Death Valley</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="sidebar-section">
-            <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
-                <span>🏜️ SOUTHWEST</span>
-                <span class="sidebar-accordion-toggle">▼</span>
-            </div>
-            <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(16, event)">Day 16 - Route 66</div>
-                <div class="sidebar-item" onclick="goToDay(17, event)">Day 17 - → Grand Canyon</div>
-                <div class="sidebar-item" onclick="goToDay(18, event)">Day 18 - Grand Canyon</div>
-                <div class="sidebar-item" onclick="goToDay(19, event)">Day 19 - Antelope Canyon</div>
-                <div class="sidebar-item" onclick="goToDay(20, event)">Day 20 - Monument Valley</div>
-                <div class="sidebar-item" onclick="goToDay(21, event)">Day 21 - Bryce & Zion</div>
-            </div>
-        </div>
-        
-        <div class="sidebar-section">
-            <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
-                <span>🎰 NEVADA</span>
-                <span class="sidebar-accordion-toggle">▼</span>
-            </div>
-            <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(22, event)">Day 22 - → Las Vegas</div>
-                <div class="sidebar-item" onclick="goToDay(23, event)">Day 23 - Las Vegas</div>
-                <div class="sidebar-item" onclick="goToDay(24, event)">Day 24 - Death Valley</div>
-            </div>
-        </div>
-        
-        <div class="sidebar-section">
-            <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
-                <span>🏠 RIENTRO</span>
-                <span class="sidebar-accordion-toggle">▼</span>
-            </div>
-            <div class="sidebar-accordion-content">
-                <div class="sidebar-item" onclick="goToDay(25, event)">Day 25 - Si torna a casa</div>
+
+            <!-- RIENTRO -->
+            <div class="sidebar-accordion-item">
+                <div class="sidebar-accordion-header" onclick="toggleSidebarAccordion(this)">
+                    <span>✈️ Rientro (1 giorno)</span>
+                    <span class="sidebar-accordion-toggle">▼</span>
+                </div>
+                <div class="sidebar-accordion-content">
+                    <div class="sidebar-day-item" onclick="goToDay(25, event)">Day 25 - Si torna a casa</div>
+                </div>
             </div>
         </div>
         
@@ -1405,9 +1411,14 @@ function toggleTimeline(el) {
             <div class="sidebar-item">✈️ 3 voli internazionali</div>
             <div class="sidebar-item">🏨 13 hotel prenotati</div>
         </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Backup Dati</div>
+            <div class="sidebar-item" onclick="openBackupModal()" style="background: linear-gradient(135deg, #7FECE5 0%, #FFBBE2 100%); color: white; font-weight: 600; cursor: pointer;">
+                ☁️ Backup Spese → GitHub
+            </div>
+        </div>
     </div>
-    
-    <div class="overlay" id="overlay"></div>
     
     <header id="header">
         <h1>AMERICAN ODYSSEY</h1>
@@ -1579,63 +1590,33 @@ function addTimestampToPayments(payments) {
                 description: "Vienna → New York, Newark. Primo giorno di questa avventura fantastica!",
                 timeline: [
                     { 
-                        time: "05:30", 
-                        action: "Sveglia & Colazione leggera",
-                        place: "Casa",
-                        details: {
-                            cosa: "Sveglia e colazione leggera a casa - caffè e toast. Niente di pesante per il volo di 9 ore.",
-                            tenere: "Energia per la giornata.",
-                            dettagli: "⚠️ Volo lungo: evitate cibi pesanti."
-                        }
-                    },
-                    { 
-                        time: "06:15", 
-                        action: "Partenza verso l'aeroporto",
-                        place: "Vienna International Airport",
-                        details: {
-                            cosa: "Uber/Taxi verso Vienna International Airport (Flughafen Wien-Schwechat).",
-                            tenere: "Passaporto, biglietti, documenti ESTA, bagaglio.",
-                            dettagli: "📌 Partire almeno 2.5 ore prima del decollo. Traffico mattutino imprevedibile. Tempo stimato: 30-40 minuti."
-                        }
-                    },
-                    { 
-                        time: "06:45", 
-                        action: "Arrivo Aeroporto & Check-in",
-                        place: "Vienna International Airport",
-                        details: {
-                            cosa: "Check-in online. Controllo bagagli al counter se necessario. Andate direttamente al check-in.",
-                            tenere: "Passaporto, biglietto stampato o nel telefono, bagaglio.",
-                            dettagli: "💡 Se avete già fatto check-in online, usate il self-check-in ai chioschi."
-                        }
-                    },
-                    { 
                         time: "07:05", 
-                        action: "Controllo sicurezza & Lounge Aspria",
-                        place: "Vienna International Airport - Lounge Aspria",
+                        action: "🛫 SZ Geiselbergstraße → VIE",
+                        place: "Vienna",
                         details: {
-                            cosa: "Passate la sicurezza. Dirigetevi alla Lounge Aspria per colazione, doccia e relax.",
-                            tenere: "Bottiglia d'acqua vuota (riempitela dopo la sicurezza). Documenti pronti.",
-                            dettagli: "⭐ Fate una doccia — vi sentirete umani per il volo di 9 ore. Colazione completa: uova, pane, formaggi. Caricate i telefoni al 100%."
+                            cosa: "Partenza da casa verso Vienna International Airport.",
+                            tenere: "Passaporto, biglietti, documenti ESTA, bagagli.",
+                            dettagli: "📌 Partite con margine di tempo. Traffico mattutino a Vienna può variare."
                         }
                     },
                     { 
-                        time: "08:30-09:15", 
-                        action: "Relax in lounge & ultimi preparativi",
-                        place: "Lounge Aspria",
-                        details: {
-                            cosa: "Controllate le prenotazioni hotel, numero ESTA, conferme auto SIXT. Leggete, riposate, usate il wifi.",
-                            tenere: "Tutti i documenti al 100%.",
-                            dettagli: "💡 Controllate che tutto sia a posto prima del volo."
-                        }
-                    },
-                    { 
-                        time: "09:30", 
-                        action: "Uscita lounge & Directed to gate",
+                        time: "07:35", 
+                        action: "Check-in Volo → Imbarco Valigie",
                         place: "Vienna International Airport",
                         details: {
-                            cosa: "Uscite dalla lounge e dirigetevi al gate. I gate possono essere lontani.",
-                            tenere: "Documenti pronti: passaporto, ESTA confirmation email, biglietto, carta di credito.",
-                            dettagli: "📌 Caricate tutti i documenti nello smartphone come backup."
+                            cosa: "Check-in online o al counter. Depostazione dei bagagli sui nastri di imbarco.",
+                            tenere: "Passaporto, biglietto, documento ESTA.",
+                            dettagli: "💡 Se check-in online fatto, usate self-service ai kiosk per imbarcare i bagagli più velocemente."
+                        }
+                    },
+                    { 
+                        time: "08:45", 
+                        action: "Arrivo al Gate → Imbarco",
+                        place: "Vienna International Airport - Gate area",
+                        details: {
+                            cosa: "Dirigetevi al gate assegnato. Controllate numero di imbarco sui monitor. Preparate documenti di viaggio.",
+                            tenere: "Documenti pronti, passaporto a portata di mano.",
+                            dettagli: "⭐ Gate può cambiare in aeroporto austriaco - controllate monitor ogni 10 minuti."
                         }
                     },
                     { 
@@ -1644,8 +1625,8 @@ function addTimestampToPayments(payments) {
                         place: "Vienna International Airport",
                         details: {
                             cosa: "Imbarco sul Boeing 777. Posti 28K (Andrea finestra) - 28J (Monica centrale). Stessa fila!",
-                            tenere: "Documenti, cuscino per il collo, auricolari.",
-                            dettagli: "🛫 Chiedete subito alla hostess un cuscino e una coperta. Bevete molta acqua durante il volo. Muovete le gambe ogni 2 ore. Volo di 9h 10m."
+                            tenere: "Documenti, cuscino per il collo, auricolari, calzini di ricambio.",
+                            dettagli: "🛫 Chiedete subito alla hostess un cuscino e una coperta. Bevete molta acqua durante il volo (6-7 bicchieri). Muovete le gambe ogni 2 ore per evitare trombosi. Indossate calzini comodi. Volo di 9h 50m."
                         }
                     },
                     { 
@@ -1653,49 +1634,39 @@ function addTimestampToPayments(payments) {
                         action: "🛬 ATTERRAGGIO Newark",
                         place: "Newark Airport (EWR)",
                         details: {
-                            cosa: "Atterraggio a Newark. Mettete gli orologi avanti di 6 ore (ora di New York).",
-                            tenere: "Passaporto, ESTA, moduli doganali.",
-                            dettagli: "⚠️ Fase critica immigrazione: ~45-70 minuti. Avete l'ESTA, quindi la coda dovrebbe essere veloce. Rispondete in inglese: Purpose? Tourism. How long? 25 days. Where staying? Sofitel New York."
+                            cosa: "Atterraggio a Newark. Mettete gli orologi indietro di 6 ore (ora di New York EDT è 6 ore dietro CET).",
+                            tenere: "Passaporto, ESTA confirmation, moduli doganali.",
+                            dettagli: "⚠️ FASE CRITICA IMMIGRAZIONE: 45-70 minuti. Avete ESTA (approvato anticipatamente), quindi la coda dovrebbe essere veloce. Rispondete in inglese chiaro: 'Purpose? Tourism. How long? 25 days. Where staying? Sofitel New York.' Sorridente e diretto. 📸 Fotografia obbligatoria."
                         }
                     },
                     { 
-                        time: "14:30-15:40", 
+                        time: "14:30 - 15:40", 
                         action: "Immigrazione & Ritiro bagagli",
-                        place: "Newark Airport",
+                        place: "Newark Airport (EWR)",
                         details: {
-                            cosa: "Controllate l'immigrazione con ESTA. Ritiro bagagli al nastro - cercate numero volo OS37.",
-                            tenere: "Passaporto, ESTA confirmation, modulo doganale (distribuito in aereo).",
-                            dettagli: "📸 Fate foto dei tag dei bagagli con il telefono (backup). Se bagaglio non arriva in 30 min, reportate subito al desk Austrian Airlines."
+                            cosa: "Passate gli uffici immigrazione con ESTA. Cercate il nastro bagagli per il volo OS37. Aspettate i vostri bagagli.",
+                            tenere: "Passaporto, ESTA confirmation, boarding pass.",
+                            dettagli: "📸 Fate foto dei tag dei bagagli sul telefono (backup nel caso di smarrimento). Se bagaglio non arriva entro 30 minuti dal ritiro, reportate IMMEDIATAMENTE al desk Austrian Airlines in Terminal C. Avrete assistenza per bagaglio smarrito (rimborso e spedizione)."
                         }
                     },
                     { 
                         time: "15:40-16:00", 
                         action: "Dogana USA & Uscita aeroporto",
-                        place: "Newark Airport",
+                        place: "Newark Airport (EWR) - Customs",
                         details: {
-                            cosa: "Green channel - dichiarate solo beni personali. Usate il bagno. Riempite la bottiglia d'acqua.",
-                            tenere: "Modulo doganale, documenti.",
-                            dettagli: "💡 Controllate il telefono: dovreste avere segnale Verizon/AT&T automaticamente (roaming USA)."
+                            cosa: "Green channel (niente dichiarazioni). Dichiarate solo beni personali. Mostrate bagagli se richiesto (molto raro con ESTA).",
+                            tenere: "Modulo doganale compilato (distribuito in aereo), documenti.",
+                            dettagli: "💡 Se vi chiedono 'Anything to declare?', rispondete 'No, just personal items.' Usate bagno e riempite bottiglia d'acqua qui (gratis). Controllate telefono — dovreste avere segnale Verizon/AT&T automaticamente (roaming USA attivo)."
                         }
                     },
                     { 
-                        time: "16:15", 
+                        time: "16:15-17:30", 
                         action: "🚕 UBER verso Sofitel New York",
-                        place: "Sofitel New York Midtown (45 W 44th St, Midtown Manhattan)",
+                        place: "Newark to Midtown Manhattan",
                         details: {
-                            cosa: "Aprite l'app Uber. Destinazione: Sofitel New York, 45 W 44th St, tra 8th e 9th Ave, Midtown Manhattan.",
-                            tenere: "Carta di credito europea (Uber la accetta), cellulare con carica.",
-                            dettagli: "🚗 Tragitto: ~30-45 minuti dal terminal EWR a Midtown. Costo: $45-60. Scrivete al driver che avete bagagli grandi. OPZIONE: UberComfort (+$10) è più comodo dopo 9 ore di volo. ⏱️ Può durare 60 minuti il sabato pomeriggio (traffico)."
-                        }
-                    },
-                    { 
-                        time: "17:00-17:30", 
-                        action: "Viaggio Uber & Skyline di Manhattan",
-                        place: "New Jersey Turnpike → Midtown",
-                        details: {
-                            cosa: "Vedrete l'autostrada, cartelli giganti, lo skyline di Manhattan in lontananza. Monica, questo è il momento di dire 'We're actually here'!",
-                            tenere: "Niente - riposate in auto. È il primo momento di silenzio in 24 ore.",
-                            dettagli: "🌃 Passate davanti a Times Square, Empire State Building. La città è ENORME."
+                            cosa: "Aprite app Uber dal Terminal C ground floor. Destinazione: Sofitel New York, 45 W 44th St, Midtown Manhattan (tra 8th e 9th Avenue). Driver raccoglierà voi e bagagli.",
+                            tenere: "Carta di credito europea (Uber accetta tutte), cellulare carico, indirizzo hotel negli appunti.",
+                            dettagli: "🚗 TRAGITTO: 30-45 min normalmente, ma il SABATO pomeriggio può durare fino a 60 minuti (traffico prevedibile). COSTO: $45-60. OPZIONE UberComfort: +$10 ma MOLTO più comodo dopo 9 ore di volo. Scrivete al driver in app: 'Large luggage, arriving from Europe, first time NYC'. Bevete acqua in auto. NON CHE VI DICA NIENTE SULLA CITTÀ ANCORA — ascoltate ma riposate."
                         }
                     },
                     { 
@@ -1703,60 +1674,60 @@ function addTimestampToPayments(payments) {
                         action: "CHECK-IN SOFITEL NEW YORK",
                         place: "Sofitel New York (45 W 44th St, Midtown Manhattan)",
                         details: {
-                            cosa: "Arrivo al Sofitel New York. Il portiere vi aiuterà con i bagagli. Check-in in reception.",
+                            cosa: "Arrivo al Sofitel. Portiere aiuta con bagagli. Check-in in reception. Prenotazione PVKPCMTN.",
                             tenere: "Passaporto, carta di credito, numero prenotazione.",
-                            dettagli: "💡 CONSIGLI: (1) Chiedete stanza con vista Times Square se disponibile (costo extra). (2) Wake-up call alle 5:30 domani. (3) Chiedete ascensori, colazione, palestra. (4) Card camera apre tutto — non perdetela. (5) Mettete 'Do Not Disturb' se dormite presto. Prenotazione: PVKPCMTN"
+                            dettagli: "💡 CONSIGLI RECEPTION: (1) 'Wake-up call at 6:00 AM tomorrow please'. (2) 'Room with Times Square view available?' (upgrade $50-70 optional). (3) 'WiFi password?' (3) 'Express checkout tomorrow?'. (4) 'Late checkout possible? (Solitamente checkout è 12:00, potete negoziare 13:00). (5) 'Where is the gym?' (6) 'Best restaurant nearby for dinner tonight?'. Card camera apre porte, ascensore, room — NON PERDETELA."
                         }
                     },
                     { 
-                        time: "17:45-18:00", 
+                        time: "17:45-18:15", 
                         action: "Salita in camera & Doccia veloce",
                         place: "Sofitel New York - Camera",
                         details: {
-                            cosa: "Aprite i bagagli. Tirate fuori quello che vi serve per stanotte. Fate doccia veloce (fredda, per svegliarvi). Cambiatevi d'abito.",
-                            tenere: "Accappatoio, toiletries.",
-                            dettagli: "🚿 Doccia fredda aiuta con il jet lag."
+                            cosa: "Entrate in camera. Tirate fuori bagaglio con essenziale per stasera. Fate doccia VELOCE (10 min) con acqua FREDDA.",
+                            tenere: "Accappatoio hotel, shampoo (portate il vostro o usate hotel).",
+                            dettagli: "🚿 Doccia fredda aiuta a combattere jet lag e a svegliarvi (vi sentirete umani di nuovo). Cambiatevi d'abito — scegliete abbigliamento comodo ma decente per Times Square."
                         }
                     },
                     { 
-                        time: "18:30", 
+                        time: "18:30-19:00", 
                         action: "🚶‍♂️ PRIMA PASSEGGIATA — Times Square",
                         place: "Times Square (a 100 metri da Sofitel)",
                         details: {
-                            cosa: "Uscite in strada per 15-20 minuti. Camminate verso Times Square (letteralmente a 100 metri a sud del Sofitel).",
-                            tenere: "Scarpe comode, cellulare per foto.",
-                            dettagli: "✨ Luci, schermi giganti, folle di turisti anche di sera. Marchi italiani ovunque (Gucci, Prada). Rumore assordante — primo shock sensoriale di NYC. 📸 Fate 2-3 foto. Non restate più di 20 minuti — iniziate già a sentir fatica."
+                            cosa: "Uscite dall'hotel. Camminate verso Times Square — letteralmente a 100 metri a sud del Sofitel (42nd St). Fatevi una foto nei cartelloni giganti.",
+                            tenere: "Scarpe comode, cellulare per foto, giacca leggera.",
+                            dettagli: "✨ Questo è SHOCK SENSORIALE: luci giganti, schermi a LED, musica assordante, folle di turisti, pubblicità ovunque. Marchi italiani (Gucci, Prada, Dolce & Gabbana) su tutte le strade. Andrea e Monica, questo è il vostro primo 'OH WOW' moment di NYC. 📸 FOTO OBBLIGATORIA sotto il cartellone di Times Square. Restate 15-20 minuti massimo — state iniziando ad accumulare fatica. Fate una piccola mappa mentale della strada — è il cuore di Manhattan."
                         }
                     },
                     { 
-                        time: "19:00-20:30", 
+                        time: "19:15-21:00", 
                         action: "🍽️ CENA a Midtown",
-                        place: "Keen's Chophouse (72 W 36th St, Manhattan) O Shuka O Joe & the Juice O Balthazar",
+                        place: "Keen's Chophouse O Shuka O Balthazar",
                         details: {
-                            cosa: "Scegliete UNA di queste opzioni: (1) KEEN'S CHOPHOUSE (72 W 36th St) — Steakhouse dal 1885, atmosfera storica, bistecca perfetta. Budget: $60-80. (2) SHUKA (Midtown) — Cucina mediterranea, piatti da condividere. Budget: $40-60. (3) JOE & THE JUICE (Midtown) — Sandwich veloce, birra. Budget: $15-20. (4) BALTHAZAR (80 Spring St, SoHo) — Brasserie francese, oyster bar. Budget: $70-90.",
-                            tenere: "Carta di credito, cellulare Uber.",
-                            dettagli: "📌 Ordinate Uber dal Sofitel alle 18:45 (ora locale). Mangiate leggero: proteine + verdure. Bevete acqua e 1 birra/vino — niente alcol forte. Finite cena entro le 20:30."
+                            cosa: "Scegliete UNA opzione: (1) KEEN'S CHOPHOUSE (72 W 36th St, 5 min a piedi da Sofitel) — Steakhouse dal 1885, atmosfera storica. Budget: $65-80 a persona. (2) SHUKA (Midtown) — Cucina mediterranea, piatti da condividere. Budget: $45-60 a persona. (3) JOE & THE JUICE (Midtown) — Fast food gourmet se siete troppo stanchi. Budget: $15-20. (4) BALTHAZAR (80 Spring St, SoHo - 15 min Uber) — Brasserie francese elegante, oyster bar. Budget: $80-100 a persona.",
+                            tenere: "Carta di credito, cellulare, scarpe comode.",
+                            dettagli: "📌 CONSIGLIO: Ordinate Uber dal Sofitel alle 18:45 (ora locale NYC). MENU CONSIGLIATO: Proteine (bistecca/pesce) + verdure + acqua + 1 vino/birra. NON bevete alcolici forti (cognac, whisky) — il vostro corpo è già esausto. Mangiate LENTAMENTE — non affrettatevi anche se dormienti. Cena dovrebbe finire entro 21:00 massimo. Se scegliete Balthazar, PRENOTATE dall'hotel alle 18:00 dicendo 'party of 2, first time in NYC, romantic dinner'."
                         }
                     },
                     { 
-                        time: "20:30-21:00", 
+                        time: "21:15", 
                         action: "Rientro al Sofitel & Preparazione camera",
-                        place: "Sofitel New York",
+                        place: "Sofitel New York - Camera",
                         details: {
-                            cosa: "A piedi o Uber verso Sofitel (pochi minuti). Entrate in camera. Chiudete tutte le tende.",
-                            tenere: "Chiavi camera.",
-                            dettagli: "📱 Mettete cellulare in 'Do Not Disturb' mode. Bevete un bicchiere d'acqua."
+                            cosa: "Rientrate all'hotel a piedi (se Keen's/Shuka) o Uber (se Balthazar). Entrate in camera. Chiudete TUTTE le tende — dark room è essenziale per jet lag.",
+                            tenere: "Chiave camera, bottiglia d'acqua.",
+                            dettagli: "📱 Mettete cellulare in 'Do Not Disturb' — nessun suono. Bevete mezzo bicchiere d'acqua. Cambiatevi in pigiama."
                         }
                     },
                     { 
-                        time: "21:00", 
+                        time: "21:30", 
                         action: "😴 ANDARE A DORMIRE",
                         place: "Sofitel New York - Camera",
                         bedtime: true,
                         details: {
-                            cosa: "CRITICO per jet lag. Dormite ADESSO, non rimandiate.",
-                            tenere: "Pigiama, tappi orecchi, mascherina per gli occhi.",
-                            dettagli: "⚠️ Il vostro corpo pensa siano le 03:00 mattina italiana ma il sole è tramontato a NYC. Vi sveglierete naturalmente alle 5:30-6:00 domani (grazie al jet lag), PERFETTO per il Day 2 (Central Park all'alba). Se non dormite subito, rimanete a letto a occhi chiusi — il riposo conta."
+                            cosa: "CRITICO per jet lag. Dormite ADESSO. Non scrollate il telefono, non guardate TV. Solo dormi.",
+                            tenere: "Pigiama, tappi orecchi, mascherina per gli occhi (oscurare luce Times Square).",
+                            dettagli: "⚠️ JETS LAG HACK: Il vostro corpo crede siano le 03:30 mattina italiana. La melatonina naturale vi aiuterà a dormire. Vi sveglierete spontaneamente intorno a 6:00-7:00 domani (Day 2: Central Park all'alba). Se non dormite, restate a letto a occhi chiusi — il riposo fisico conta. ✅ GIORNO 1 COMPLETATO: siete arrivati a NYC!"
                         }
                     }
                 ],
@@ -1801,61 +1772,7 @@ function addTimestampToPayments(payments) {
                 ],
                 restaurants: {
                     pranzo: [],
-                    cena: [
-                        {
-                            name: "Keen's Chophouse",
-                            type: "🍖 Steakhouse Classico",
-                            location: "72 W 36th St, Manhattan",
-                            time: "19:00-20:30",
-                            cuisine: "Steakhouse dal 1885",
-                            founded: "1885",
-                            atmosphere: "Storica, elegante, affumicatoio con storia",
-                            specialty: "Bistecca perfetta, mutton chops",
-                            budget: "$60-80 a persona",
-                            distance: "5 minuti a piedi da Sofitel",
-                            booking: "Walk-in ok",
-                            notes: "Anche last minute trovate posto."
-                        },
-                        {
-                            name: "Shuka",
-                            type: "🥘 Cucina Mediterranea",
-                            location: "Midtown Manhattan",
-                            time: "19:00-20:30",
-                            cuisine: "Cucina Mediterranea moderna",
-                            style: "Moderno, piatti da condividere",
-                            specialty: "Piatti Med, tapas, vini naturali",
-                            budget: "$40-60 a persona",
-                            distance: "2 minuti da Sofitel",
-                            booking: "Walk-in ok",
-                            notes: "Meno formal di Keen's. Non è rumoroso."
-                        },
-                        {
-                            name: "Joe & the Juice",
-                            type: "🥪 Casual Veloce",
-                            location: "Vari indirizzi Midtown",
-                            time: "19:00-20:30",
-                            cuisine: "Sandwich gourmet e birra",
-                            style: "Veloce, informale",
-                            specialty: "Sandwich fresco, succhi, birra",
-                            budget: "$15-20 a persona",
-                            distance: "50 metri da Sofitel",
-                            booking: "Walk-in",
-                            notes: "Se siete troppo stanchi per sedere a tavolo."
-                        },
-                        {
-                            name: "Balthazar",
-                            type: "🦪 Brasserie Francese (SPLURGE)",
-                            location: "80 Spring St, SoHo",
-                            time: "19:00-20:30",
-                            cuisine: "Brasserie Francese Classica",
-                            style: "Elegante, magico, oyster bar",
-                            specialty: "Oysters, piatti francesi, atmosfera parigina",
-                            budget: "$70-90 a persona",
-                            distance: "15 minuti Uber",
-                            booking: "PRENOTAZIONE CONSIGLIATA",
-                            notes: "Esperienza speciale — perfetto per prima sera. Chiamate dall'hotel alle 18:45."
-                        }
-                    ]
+                    cena: []
                 }
             },
             {
@@ -1911,7 +1828,7 @@ function addTimestampToPayments(payments) {
                         action: "🌳 CENTRAL PARK ENTRADA",
                         place: "Central Park (Columbus Circle entrance)",
                         details: {
-                            cosa: "Enciclopedia rapida: Central Park è 843 acri (3,4 km²) di verde al centro di Manhattan. Progettato nel 1858 da Frederick Law Olmsted.",
+                            cosa: "Dalla Columbus Circle, andate nord-est. Strawberry Fields è il memoriale a John Lennon. Camminate piano.",
                             tenere: "Mappe sul telefono per non perdervi.",
                             dettagli: "💚 È il polmone di NYC, rifugio dai grattacieli. La luce è bassa, il parco è silenzioso. NON abbiate fretta — Central Park è meditazione, non una corsa!"
                         }
@@ -4415,10 +4332,7 @@ function addTimestampToPayments(payments) {
             // Ricerca ESATTA — prima controlla i match esatti
             for (let key of sortedKeys) {
                 if (placeName.toLowerCase() === key.toLowerCase()) {
-                    return `<div class="detail-section">
-                        <div class="detail-title">📖 Enciclopedia Rapida</div>
-                        <div class="detail-text">${encyclopedia[key]}</div>
-                    </div>`;
+                    return '';
                 }
             }
             
@@ -4453,10 +4367,7 @@ function addTimestampToPayments(payments) {
             }
             
             if (bestMatch) {
-                return `<div class="detail-section">
-                    <div class="detail-title">📖 Enciclopedia Rapida</div>
-                    <div class="detail-text">${encyclopedia[bestMatch]}</div>
-                </div>`;
+                return '';
             }
             
             return ''; // Se non trova nulla, non mostra nulla

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-29T19:14:05.484Z",
+  "timestamp": "2026-03-29T19:14:21.672Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -37,12 +37,11 @@
     },
     {
       "id": "1774624226059hz2do7q18",
-      "description": "Statua Libertà ",
+      "description": "Statua Libertà",
       "category": "Tour",
       "amount": 58.73,
-      "day": 1,
-      "person": "Andrea",
-      "updated": 1774624226059
+      "day": 3,
+      "person": "Andrea"
     },
     {
       "id": "1774624249470mhzgk6zfn",

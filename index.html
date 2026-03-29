@@ -7019,7 +7019,7 @@ function addTimestampToPayments(payments) {
             
             // ⚡ Auto-sync quando modifichi
             console.log("✏️ Auto-sync dopo modifica spesa...");
-            syncData();
+            autoSyncNewExpense();
         }
 
         function deleteExpense(idx) {
@@ -7055,7 +7055,7 @@ function addTimestampToPayments(payments) {
             
             // ⚡ Auto-sync quando elimini
             console.log("🗑️ Auto-sync dopo eliminazione spesa...");
-            syncData();
+            autoSyncNewExpense();
         }
 
         async function addPayment() {
@@ -7178,7 +7178,7 @@ function addTimestampToPayments(payments) {
             
             // ⚡ Auto-sync quando modifichi
             console.log("✏️ Auto-sync dopo modifica pagamento...");
-            syncData();
+            autoSyncNewExpense();
         }
 
         function deletePayment(idx) {
@@ -7214,7 +7214,7 @@ function addTimestampToPayments(payments) {
             
             // ⚡ Auto-sync quando elimini
             console.log("🗑️ Auto-sync dopo eliminazione pagamento...");
-            syncData();
+            autoSyncNewExpense();
         }
 
         function renderCountdownInSidebar() {

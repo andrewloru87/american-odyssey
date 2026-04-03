@@ -1,9 +1,149 @@
 {
-  "timestamp": "2026-04-03T16:17:01.271Z",
-  "expenses": [],
+  "timestamp": "2026-04-03T16:17:14.481Z",
+  "expenses": [
+    {
+      "id": "1774623509086lzg157jdd",
+      "description": "Zion ",
+      "category": "Hotel",
+      "amount": 114.69,
+      "day": 21,
+      "person": "Andrea",
+      "updated": 1774623509086
+    },
+    {
+      "id": "17746235418157xiss27d4",
+      "description": "Mandala",
+      "category": "Hotel",
+      "amount": 226.74,
+      "day": 22,
+      "person": "Andrea",
+      "updated": 1774623541815
+    },
+    {
+      "id": "1774624041481ffqwxflwo",
+      "description": "Moulin Rouge",
+      "category": "Show",
+      "amount": 269.37,
+      "day": 4,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774624078270sygqkz9g0",
+      "description": "Top of the rock",
+      "category": "Attività",
+      "amount": 104.11,
+      "day": 5,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774624226059hz2do7q18",
+      "description": "Statua Libertà",
+      "category": "Tour",
+      "amount": 58.73,
+      "day": 3,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774624249470mhzgk6zfn",
+      "description": "Disneyland",
+      "category": "Attività",
+      "amount": 782.71,
+      "day": 13,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774624270141fq5i1s91h",
+      "description": "Universal",
+      "category": "Attività",
+      "amount": 740.3,
+      "day": 14,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774624364322lz3c1f13v",
+      "description": "Cirque Du Soleil",
+      "category": "Show",
+      "amount": 291.35,
+      "day": 23,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774624388604ff4p7ihoe",
+      "description": "Parchi pass",
+      "category": "Parchi",
+      "amount": 70.49,
+      "day": 8,
+      "person": "Andrea"
+    },
+    {
+      "id": "17746256693656pe7gahdi",
+      "description": "NYC to SFO",
+      "category": "Voli",
+      "amount": 438.76,
+      "day": 6,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774625696051gmtqhdbm8",
+      "description": "Sixt",
+      "category": "Auto",
+      "amount": 1029.37,
+      "day": 8,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774625723073a7y4t4xyl",
+      "description": "Antelope",
+      "category": "Tour",
+      "amount": 120.46,
+      "day": 19,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774625745084n2wys7b72",
+      "description": "Monument Valley",
+      "category": "Tour",
+      "amount": 170.68,
+      "day": 20,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774625760223ifd7g3ixh",
+      "description": "Summit",
+      "category": "Attività",
+      "amount": 165.43,
+      "day": 2,
+      "person": "Andrea"
+    },
+    {
+      "id": "1774625789664tbtv18ill",
+      "description": "Esta",
+      "category": "Altro",
+      "amount": 154.06,
+      "day": 0,
+      "person": "Andrea"
+    },
+    {
+      "id": "17746260376102q6ceoh3e",
+      "description": "VIE to NYC",
+      "category": "Voli",
+      "amount": 1714.36,
+      "day": 1,
+      "person": "Andrea"
+    },
+    {
+      "id": "17748071846059ue29cms7",
+      "description": "Bonifici",
+      "category": "💸 Pagamenti",
+      "amount": -5888,
+      "day": 0,
+      "person": "Monica",
+      "updated": 1774807184605
+    }
+  ],
   "payments": [],
   "summary": {
-    "total": 0,
-    "count": 0
+    "total": 563.6099999999997,
+    "count": 17
   }
 }

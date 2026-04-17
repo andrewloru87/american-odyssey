@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-17T16:19:32.726Z",
+  "timestamp": "2026-04-17T16:21:01.059Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -166,11 +166,20 @@
       "day": 0,
       "person": "Monica",
       "updated": 1776361065880
+    },
+    {
+      "id": "17764428610512ufsoax5p",
+      "description": "Sim Moni",
+      "category": "Altro",
+      "amount": 97.92,
+      "day": 0,
+      "person": "Andrea",
+      "updated": 1776442861051
     }
   ],
   "payments": [],
   "summary": {
-    "total": -906.3900000000003,
-    "count": 20
+    "total": -808.4700000000004,
+    "count": 21
   }
 }

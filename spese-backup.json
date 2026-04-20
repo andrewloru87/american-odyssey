@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-20T20:46:47.294Z",
+  "timestamp": "2026-04-20T20:47:55.397Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -227,11 +227,20 @@
       "day": 3,
       "person": "Andrea",
       "updated": 1776718007285
+    },
+    {
+      "id": "17767180753903ixzm8oxa",
+      "description": "Abercrombie",
+      "category": "Shopping",
+      "amount": 110,
+      "day": 2,
+      "person": "Andrea",
+      "updated": 1776718075390
     }
   ],
   "payments": [],
   "summary": {
-    "total": -426.9300000000004,
-    "count": 27
+    "total": -316.9300000000004,
+    "count": 28
   }
 }

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-20T20:53:56.000Z",
+  "timestamp": "2026-04-20T20:55:23.236Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -203,12 +203,11 @@
     },
     {
       "id": "17766895581633vv6uc18z",
-      "description": "Wraps Target ",
+      "description": "Wraps + Target",
       "category": "Pasti",
-      "amount": 6.36,
+      "amount": 44,
       "day": 1,
-      "person": "Andrea",
-      "updated": 1776689558163
+      "person": "Andrea"
     },
     {
       "id": "17767179515794n07uqd5a",
@@ -266,7 +265,7 @@
   ],
   "payments": [],
   "summary": {
-    "total": -15.230000000000405,
+    "total": 22.40999999999958,
     "count": 31
   }
 }

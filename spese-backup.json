@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-20T20:52:03.007Z",
+  "timestamp": "2026-04-20T20:52:37.312Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -254,11 +254,20 @@
       "day": 1,
       "person": "Andrea",
       "updated": 1776718322999
+    },
+    {
+      "id": "177671835730167lhk6zp1",
+      "description": "Magnetini ",
+      "category": "Souvenir",
+      "amount": 15.2,
+      "day": 3,
+      "person": "Monica",
+      "updated": 1776718357301
     }
   ],
   "payments": [],
   "summary": {
-    "total": -30.930000000000405,
-    "count": 30
+    "total": -15.730000000000405,
+    "count": 31
   }
 }

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-22T11:13:45.463Z",
+  "timestamp": "2026-04-22T11:14:12.804Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -221,10 +221,9 @@
       "id": "1776718007285jix5y68gu",
       "description": "Salswee",
       "category": "Pasti",
-      "amount": 52.28,
+      "amount": 44.51,
       "day": 3,
-      "person": "Andrea",
-      "updated": 1776718007285
+      "person": "Andrea"
     },
     {
       "id": "17767180753903ixzm8oxa",
@@ -262,7 +261,7 @@
   ],
   "payments": [],
   "summary": {
-    "total": -21.860000000000344,
+    "total": -29.630000000000326,
     "count": 31
   }
 }

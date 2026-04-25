@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-25T01:11:52.089Z",
+  "timestamp": "2026-04-25T01:12:59.047Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -337,11 +337,20 @@
       "amount": 78.7,
       "day": 5,
       "person": "Andrea"
+    },
+    {
+      "id": "1777079579036bqgcj5hks",
+      "description": "Chubby cattle",
+      "category": "Pasti",
+      "amount": 201.37,
+      "day": 4,
+      "person": "Andrea",
+      "updated": 1777079579036
     }
   ],
   "payments": [],
   "summary": {
-    "total": 2590.3999999999996,
-    "count": 40
+    "total": 2791.7699999999995,
+    "count": 41
   }
 }

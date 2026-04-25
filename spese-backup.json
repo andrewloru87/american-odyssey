@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-25T00:58:23.029Z",
+  "timestamp": "2026-04-25T00:58:56.014Z",
   "expenses": [
     {
       "id": "1774623509086lzg157jdd",
@@ -284,11 +284,20 @@
       "day": 9,
       "person": "Andrea",
       "updated": 1776971387129
+    },
+    {
+      "id": "1777078736007s6kn1jhsg",
+      "description": "Yosemite Southgate ",
+      "category": "Hotel",
+      "amount": 147.88,
+      "day": 9,
+      "person": "Andrea",
+      "updated": 1777078736007
     }
   ],
   "payments": [],
   "summary": {
-    "total": 268.39999999999964,
-    "count": 34
+    "total": 416.27999999999963,
+    "count": 35
   }
 }
